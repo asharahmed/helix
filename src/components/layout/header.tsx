@@ -36,7 +36,7 @@ export function Header() {
         <span className="text-sm font-sans font-medium text-text-primary">
           {currentPage?.label ?? 'Helix'}
         </span>
-        <span className="text-xs text-muted">//</span>
+        <span className="text-xs text-muted">{'//'}</span>
         <span className="label-text">OPERATIONAL</span>
       </div>
 

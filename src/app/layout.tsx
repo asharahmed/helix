@@ -9,6 +9,16 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.svg',
   },
+  openGraph: {
+    title: 'Helix',
+    description: 'Unified infrastructure monitoring dashboard for Prometheus, Alertmanager, Loki, Wazuh, and CrowdSec.',
+    url: 'https://helix.aahmed.ca',
+    siteName: 'Helix',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+  },
 };
 
 export default function RootLayout({
