@@ -1,6 +1,28 @@
 {
   "name": "helix",
   "version": "1.1.0",
+  "description": "Unified infrastructure monitoring dashboard for Prometheus, Alertmanager, Loki, Wazuh, and CrowdSec",
+  "author": "Ashar Ahmed",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asharahmed/helix.git"
+  },
+  "homepage": "https://asharahmed.github.io/helix",
+  "keywords": [
+    "monitoring",
+    "dashboard",
+    "prometheus",
+    "alertmanager",
+    "loki",
+    "wazuh",
+    "crowdsec",
+    "homelab",
+    "infrastructure"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "private": true,
   "scripts": {
     "dev": "next dev",

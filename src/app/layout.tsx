@@ -5,7 +5,10 @@ import '@/styles/palantir-theme.css';
 
 export const metadata: Metadata = {
   title: 'Helix',
-  description: 'Unified Monitoring Command Center',
+  description: 'Unified infrastructure monitoring dashboard for Prometheus, Alertmanager, Loki, Wazuh, and CrowdSec.',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({

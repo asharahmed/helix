@@ -1,20 +1,37 @@
-# Helix
+<p align="center">
+  <img src="public/helix-logo.svg" alt="Helix" width="120" />
+</p>
 
-A monitoring dashboard that consolidates Prometheus, Alertmanager, Loki, Wazuh, and CrowdSec into a single interface. Built for homelab infrastructure running behind Caddy and Authelia.
+<h1 align="center">Helix</h1>
+
+<p align="center">
+  Unified infrastructure monitoring for Prometheus, Alertmanager, Loki, Wazuh, and CrowdSec.
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" /></a>
+  <img src="https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg" alt="Node" />
+  <img src="https://img.shields.io/badge/next.js-14-black.svg" alt="Next.js" />
+  <img src="https://img.shields.io/badge/docker-alpine-0db7ed.svg" alt="Docker" />
+</p>
+
+---
+
+A monitoring dashboard that consolidates five backend services into a single interface. Built for homelab infrastructure running behind Caddy and Authelia.
 
 Rather than switching between Grafana, the Wazuh dashboard, and CrowdSec's CLI to understand the state of things, Helix surfaces alerts, logs, metrics, security events, and ban decisions in one place with real-time updates.
 
-## Overview
+## Features
 
-**Command Center**: A D3 force-directed topology graph of the service mesh, active alerts from Prometheus and Wazuh, system metric sparklines, and an event timeline.
+**Command Center** - D3 force-directed topology graph of the service mesh, active alerts from Prometheus and Wazuh, system metric sparklines, and an event timeline.
 
-**Alerts**: Unified alert table across both Prometheus and Wazuh with search, source/severity filtering, detail expansion, and the ability to create Alertmanager silences directly.
+**Alerts** - Unified alert table across both Prometheus and Wazuh with search, source/severity filtering, detail expansion, and the ability to create Alertmanager silences directly.
 
-**Security**: Wazuh agent inventory with status and scan triggers, HIDS alerts, file integrity monitoring events, and CrowdSec ban decisions with confirmation-gated unbanning.
+**Security** - Wazuh agent inventory with status and scan triggers, HIDS alerts, file integrity monitoring events, and CrowdSec ban decisions with confirmation-gated unbanning.
 
-**Metrics**: Time-series charts for system resources (CPU, memory, disk, network), per-container resource usage, and network probe results. Backed by Prometheus range queries with an adjustable time window.
+**Metrics** - Time-series charts for system resources (CPU, memory, disk, network), per-container resource usage, and network probe results. Backed by Prometheus range queries with an adjustable time window.
 
-**Logs**: Loki log viewer with container filtering, text search, and virtualized scrolling. Supports both polling and live tail mode via SSE.
+**Logs** - Loki log viewer with container filtering, text search, and virtualized scrolling. Supports both polling and live tail mode via SSE.
 
 ## Architecture
 
@@ -33,7 +50,7 @@ Helix is stateless. Next.js API routes proxy requests to each backend, handling 
 
 For real-time updates, Alertmanager and Wazuh push webhooks into an in-memory event bus. Browsers subscribe to that bus over SSE. When an event arrives, TanStack Query caches get invalidated so the UI refreshes immediately without waiting for the next poll cycle.
 
-A server-side LRU cache (50 entries, 5s TTL) sits in front of upstream requests to reduce redundant calls when multiple clients are connected.
+A server-side LRU cache (50 entries, 5s TTL, 50MB cap) sits in front of upstream requests to reduce redundant calls when multiple clients are connected.
 
 ## Setup
 
@@ -49,7 +66,7 @@ A server-side LRU cache (50 entries, 5s TTL) sits in front of upstream requests 
 cp .env.example .env.local
 ```
 
-Defaults assume a shared Docker network where services are reachable by container name. At minimum, the Wazuh passwords and webhook secret need to be set:
+Defaults assume a shared Docker network where services are reachable by container name. At minimum, the Wazuh passwords and webhook secret need to be set.
 
 | Variable | Description |
 |---|---|
@@ -58,6 +75,7 @@ Defaults assume a shared Docker network where services are reachable by containe
 | `ALERTMANAGER_URL` | Default: `http://alertmanager:9093` |
 | `LOKI_URL` | Default: `http://loki:3100` |
 | `CROWDSEC_URL` | Default: `http://crowdsec:8080` |
+| `CROWDSEC_BOUNCER_API_KEY` | API key for the CrowdSec bouncer |
 | `WAZUH_API_URL` | Default: `https://wazuh.manager:55000` |
 | `WAZUH_API_USER` | Default: `wazuh-wui` |
 | `WAZUH_API_PASSWORD` | Required |
@@ -127,6 +145,20 @@ src/
     event-bus.ts                # In-memory pub/sub (webhooks to SSE)
 ```
 
-## Stack
+## Tech Stack
 
-Next.js 14 (App Router), TanStack Query v5, D3 force simulation (canvas rendering), Recharts, TanStack Virtual, Framer Motion, Tailwind CSS, Radix UI, undici (scoped TLS), Node.js 20 on Alpine.
+| Category | Technology |
+|---|---|
+| Framework | Next.js 14 (App Router) |
+| Data fetching | TanStack Query v5 |
+| Visualization | D3 force simulation (canvas), Recharts |
+| Virtualization | TanStack Virtual |
+| Animation | Framer Motion |
+| Styling | Tailwind CSS |
+| UI primitives | Radix UI |
+| TLS | undici (scoped dispatcher) |
+| Runtime | Node.js 20 on Alpine |
+
+## License
+
+[MIT](LICENSE)

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00d4ff"/>
+      <stop offset="100%" stop-color="#0088aa"/>
+    </linearGradient>
+    <linearGradient id="strand2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e8edf4" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#6b7d99" stop-opacity="0.7"/>
+    </linearGradient>
+  </defs>
+  <!-- Background hexagon -->
+  <path d="M256 32 L452 144 L452 368 L256 480 L60 368 L60 144 Z" fill="#0a1628" stroke="#0f2a4a" stroke-width="2"/>
+  <!-- Helix strand 1 (cyan) -->
+  <path d="M176 120 C176 160 336 180 336 220 C336 260 176 280 176 320 C176 360 336 380 336 400" stroke="url(#glow)" stroke-width="12" stroke-linecap="round" fill="none"/>
+  <!-- Helix strand 2 (light) -->
+  <path d="M336 120 C336 160 176 180 176 220 C176 260 336 280 336 320 C336 360 176 380 176 400" stroke="url(#strand2)" stroke-width="12" stroke-linecap="round" fill="none"/>
+  <!-- Cross bars -->
+  <line x1="210" y1="170" x2="302" y2="170" stroke="#00d4ff" stroke-width="4" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="196" y1="220" x2="316" y2="220" stroke="#00d4ff" stroke-width="4" stroke-opacity="0.5" stroke-linecap="round"/>
+  <line x1="210" y1="270" x2="302" y2="270" stroke="#00d4ff" stroke-width="4" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="196" y1="320" x2="316" y2="320" stroke="#00d4ff" stroke-width="4" stroke-opacity="0.5" stroke-linecap="round"/>
+  <line x1="210" y1="370" x2="302" y2="370" stroke="#00d4ff" stroke-width="4" stroke-opacity="0.4" stroke-linecap="round"/>
+  <!-- Corner accents -->
+  <path d="M256 52 L432 154" stroke="#00d4ff" stroke-width="1" stroke-opacity="0.15"/>
+  <path d="M256 52 L80 154" stroke="#00d4ff" stroke-width="1" stroke-opacity="0.15"/>
+</svg>
