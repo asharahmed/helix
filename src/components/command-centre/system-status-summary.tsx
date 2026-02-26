@@ -64,17 +64,25 @@ export function SystemStatusSummary() {
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-      {cards.map((card) => {
+      {cards.map((card, i) => {
         if (card.loading) return <CardSkeleton key={card.label} />;
         const Icon = card.icon;
         return (
-          <GlowCard key={card.label} className="p-3">
+          <div
+            key={card.label}
+            className="animate-fade-in"
+            style={{ animationDelay: `${i * 50}ms`, animationFillMode: 'backwards' }}
+          >
+          <GlowCard
+            className="p-3"
+          >
             <div className="flex items-center gap-2 mb-2">
               <Icon className="h-4 w-4 text-text-secondary" />
               <span className="label-text">{card.label}</span>
             </div>
             <DataCounter value={card.value} label={card.subtitle} color={card.color} />
           </GlowCard>
+          </div>
         );
       })}
     </div>

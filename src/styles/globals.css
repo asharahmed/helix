@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
-
 @layer base {
   :root {
     --background: #0a0a0f;
@@ -31,7 +29,7 @@
   body {
     background-color: var(--background);
     color: #e0e0e0;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-inter), 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -85,12 +83,12 @@
 
   /* Glow card */
   .glow-card {
-    @apply bg-surface border border-border rounded-lg transition-all duration-300;
+    @apply bg-surface border border-border rounded-lg transition-[border-color,box-shadow] duration-200;
   }
 
   .glow-card:hover {
     border-color: var(--border-bright);
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.05);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.04);
   }
 
   .glow-card-cyan {
@@ -173,11 +171,11 @@
   }
 
   .data-table tbody tr {
-    @apply border-b border-border/40 transition-colors;
+    @apply border-b border-border/40 transition-colors duration-150;
   }
 
   .data-table tbody tr:hover {
-    @apply bg-surface/50;
+    @apply bg-white/[0.02];
   }
 
   .data-table td {

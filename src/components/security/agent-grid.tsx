@@ -45,15 +45,16 @@ export function AgentGrid() {
       ) : error ? (
         <ErrorState message="Failed to load agents" />
       ) : agents.length === 0 ? (
-        <p className="text-sm font-mono text-text-secondary text-center py-4">
-          No agents found
-        </p>
+        <div className="flex flex-col items-center justify-center py-8 text-text-secondary">
+          <Users className="h-6 w-6 text-muted mb-2" />
+          <p className="text-sm font-mono">No agents found</p>
+        </div>
       ) : (
         <div className="space-y-2">
           {agents.map((agent) => (
             <div
               key={agent.id}
-              className="flex items-center gap-3 rounded-md border border-border bg-background/50 p-3 hover:border-border-bright transition-colors"
+              className="flex items-center gap-3 rounded-md border border-border bg-background/50 p-3 hover:border-border-bright transition-colors duration-150"
             >
               <HexIndicator status={agentStatus(agent.status)} />
               <div className="flex-1 min-w-0">

@@ -1,12 +1,22 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { AppLayout } from '@/components/layout/app-layout';
-import { SystemMetricsGrid } from '@/components/metrics/system-metrics-grid';
-import { ContainerResources } from '@/components/metrics/container-resources';
 import { NetworkProbes } from '@/components/metrics/network-probes';
 import { TimeRangePicker } from '@/components/metrics/time-range-picker';
+import { CardSkeleton } from '@/components/shared/loading-skeleton';
 import { TIME_RANGES } from '@/lib/constants';
+
+const SystemMetricsGrid = dynamic(
+  () => import('@/components/metrics/system-metrics-grid').then((m) => m.SystemMetricsGrid),
+  { ssr: false, loading: () => <div className="grid grid-cols-1 md:grid-cols-2 gap-4">{[1,2,3,4,5,6].map(i => <CardSkeleton key={i} className="h-[240px]" />)}</div> }
+);
+
+const ContainerResources = dynamic(
+  () => import('@/components/metrics/container-resources').then((m) => m.ContainerResources),
+  { ssr: false, loading: () => <CardSkeleton className="h-[400px]" /> }
+);
 
 export default function MetricsPage() {
   const [timeRange, setTimeRange] = useState('1h');

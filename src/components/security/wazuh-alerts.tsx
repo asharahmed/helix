@@ -59,18 +59,19 @@ export function WazuhAlertsPanel() {
       ) : error ? (
         <ErrorState message="Failed to load Wazuh alerts" />
       ) : groupedData.length === 0 ? (
-        <p className="text-sm font-mono text-text-secondary text-center py-8">
-          No alerts in time range
-        </p>
+        <div className="flex flex-col items-center justify-center py-8 text-text-secondary">
+          <Shield className="h-6 w-6 text-muted mb-2" />
+          <p className="text-sm font-mono">No alerts in time range</p>
+        </div>
       ) : (
         <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={groupedData} layout="vertical" margin={{ left: 80 }}>
+          <BarChart data={groupedData} layout="vertical" margin={{ left: 10, right: 10 }}>
             <XAxis type="number" tick={CHART_AXIS} />
             <YAxis
               type="category"
               dataKey="name"
               tick={{ ...CHART_AXIS, fill: '#e0e0e0' }}
-              width={80}
+              width={90}
             />
             <Tooltip {...CHART_TOOLTIP} />
             <Bar dataKey="count" radius={[0, 4, 4, 0]}>
@@ -91,7 +92,7 @@ export function WazuhAlertsPanel() {
               {data.hits.hits.slice(0, 20).map((hit) => (
                 <div
                   key={hit._id}
-                  className="flex items-center gap-2 text-xs font-mono py-1.5 border-b border-border/30"
+                  className="flex items-center gap-2 text-xs font-mono py-1.5 border-b border-border/30 transition-colors duration-150 hover:bg-white/[0.02]"
                 >
                   <Badge
                     variant={

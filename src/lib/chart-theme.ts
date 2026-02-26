@@ -3,6 +3,8 @@
  * Recharts requires literal values (not CSS variables), so we centralise them here.
  */
 
+const FONT = "'JetBrains Mono', monospace";
+
 export const CHART_COLORS = {
   cyan: '#00d4ff',
   amber: '#ffb800',
@@ -13,7 +15,7 @@ export const CHART_COLORS = {
 export const CHART_AXIS = {
   fill: '#6b7280',
   fontSize: 10,
-  fontFamily: "'JetBrains Mono', monospace",
+  fontFamily: FONT,
 } as const;
 
 export const CHART_GRID = {
@@ -25,8 +27,11 @@ export const CHART_TOOLTIP = {
   contentStyle: {
     backgroundColor: '#0f0f1a',
     border: '1px solid #1a1a2e',
-    borderRadius: 6,
-    fontSize: 12,
-    fontFamily: "'JetBrains Mono', monospace",
+    borderRadius: 8,
+    fontSize: 11,
+    fontFamily: FONT,
+    padding: '8px 12px',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
   } as React.CSSProperties,
+  cursor: { stroke: '#2a2a4e', strokeWidth: 1 },
 } as const;

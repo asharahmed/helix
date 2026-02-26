@@ -29,9 +29,10 @@ export function FIMEvents() {
       ) : error ? (
         <ErrorState message="Failed to load FIM events" />
       ) : events.length === 0 ? (
-        <p className="text-sm font-mono text-text-secondary text-center py-4">
-          No FIM events
-        </p>
+        <div className="flex flex-col items-center justify-center py-8 text-text-secondary">
+          <FileWarning className="h-6 w-6 text-muted mb-2" />
+          <p className="text-sm font-mono">No FIM events</p>
+        </div>
       ) : (
         <ScrollArea className="h-[300px]">
           <table className="data-table">

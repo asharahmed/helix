@@ -32,13 +32,11 @@ export function AlertDetailDrawer({ alert, onClose }: AlertDetailDrawerProps) {
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed right-0 top-0 z-50 h-screen w-full max-w-lg border-l border-border bg-surface"
+            transition={{ type: 'spring', damping: 26, stiffness: 350 }}
+            className="fixed right-0 top-0 z-50 h-screen w-full max-w-md lg:max-w-lg border-l border-border bg-surface"
           >
             <div className="flex items-center justify-between p-4 border-b border-border">
-              <h2 className="text-sm font-sans font-medium text-text-primary">
-                Alert Details
-              </h2>
+              <h2 className="card-title">Alert Details</h2>
               <Button variant="ghost" size="icon" onClick={onClose}>
                 <X className="h-4 w-4" />
               </Button>

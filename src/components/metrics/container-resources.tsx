@@ -57,13 +57,13 @@ export function ContainerResources() {
         <ErrorState message="No container data" />
       ) : (
         <ResponsiveContainer width="100%" height={350}>
-          <BarChart data={chartData} layout="vertical" margin={{ left: 100 }}>
+          <BarChart data={chartData} layout="vertical" margin={{ left: 10, right: 10 }}>
             <XAxis type="number" tick={CHART_AXIS} />
             <YAxis
               type="category"
               dataKey="name"
               tick={{ ...CHART_AXIS, fill: '#e0e0e0' }}
-              width={100}
+              width={110}
             />
             <Tooltip
               {...CHART_TOOLTIP}

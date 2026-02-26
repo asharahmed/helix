@@ -2,12 +2,21 @@
 
 import { usePathname } from 'next/navigation';
 import { Clock } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { RefreshControl } from '@/components/shared/refresh-control';
 import { NAV_ITEMS } from '@/lib/constants';
+import { useHealth } from '@/lib/hooks';
+
+const STATUS_MAP = {
+  operational: { label: 'OPERATIONAL', className: 'text-green' },
+  degraded: { label: 'DEGRADED', className: 'text-amber' },
+  down: { label: 'OUTAGE', className: 'text-red' },
+  loading: { label: 'CHECKING', className: 'text-muted' },
+} as const;
 
 export function Header() {
   const pathname = usePathname();
+  const { data: health } = useHealth();
   const [time, setTime] = useState('');
 
   useEffect(() => {
@@ -26,6 +35,15 @@ export function Header() {
     return () => clearInterval(interval);
   }, []);
 
+  const systemStatus = useMemo(() => {
+    if (!health) return STATUS_MAP.loading;
+    const hasDown = health.services.some((s) => s.status === 'down');
+    const hasDegraded = health.services.some((s) => s.status === 'degraded');
+    if (hasDown) return STATUS_MAP.down;
+    if (hasDegraded) return STATUS_MAP.degraded;
+    return STATUS_MAP.operational;
+  }, [health]);
+
   const currentPage = NAV_ITEMS.find((item) =>
     item.href === '/' ? pathname === '/' : pathname.startsWith(item.href)
   );
@@ -37,7 +55,9 @@ export function Header() {
           {currentPage?.label ?? 'Helix'}
         </span>
         <div className="h-3 w-px bg-border-bright" />
-        <span className="label-text text-green">OPERATIONAL</span>
+        <span className={`label-text transition-colors ${systemStatus.className}`}>
+          {systemStatus.label}
+        </span>
       </div>
 
       <div className="flex items-center gap-4">

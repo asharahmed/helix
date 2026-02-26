@@ -49,9 +49,10 @@ export function NetworkProbes() {
       {isLoading ? (
         <LoadingSkeleton lines={4} />
       ) : probes.length === 0 ? (
-        <p className="text-sm font-mono text-text-secondary text-center py-4">
-          No probe targets configured
-        </p>
+        <div className="flex flex-col items-center justify-center py-8 text-text-secondary">
+          <Globe className="h-6 w-6 text-muted mb-2" />
+          <p className="text-sm font-mono">No probe targets configured</p>
+        </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {probes.map((probe) => (

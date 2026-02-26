@@ -25,20 +25,18 @@ export function AlertTimeline() {
 
   return (
     <GlowCard>
-      <h3 className="text-sm font-sans font-medium text-text-primary mb-3">
-        Alert History
-      </h3>
+      <h3 className="card-title mb-3">Alert History</h3>
 
       {timelineData.length === 0 ? (
         <p className="text-sm font-mono text-text-secondary text-center py-4">
           No alert history
         </p>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-1">
           {timelineData.map((item) => (
             <div
               key={item.id}
-              className="flex items-center gap-3 text-xs font-mono"
+              className="flex items-center gap-3 text-xs font-mono rounded px-2 py-1.5 transition-colors duration-150 hover:bg-white/[0.02]"
             >
               <span className="text-muted w-16 shrink-0">
                 {formatTimestamp(item.start)}

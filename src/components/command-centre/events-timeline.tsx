@@ -87,7 +87,7 @@ export function EventsTimeline() {
 
             <div className="space-y-3">
               {events.map((event) => (
-                <div key={event.id} className="flex items-start gap-3 pl-1">
+                <div key={event.id} className="flex items-start gap-3 pl-1 rounded py-1 transition-colors duration-150 hover:bg-white/[0.02]">
                   <div className="relative z-10 mt-0.5">
                     {typeIcon(event.type)}
                   </div>

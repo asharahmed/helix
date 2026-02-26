@@ -275,9 +275,7 @@ export function TopologyGraph() {
   return (
     <GlowCard className="relative overflow-hidden">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-sans font-medium text-text-primary">
-          Service Topology
-        </h2>
+        <h2 className="card-title">Service Topology</h2>
         <span className="label-text">{TOPOLOGY_NODES.length} services</span>
       </div>
 

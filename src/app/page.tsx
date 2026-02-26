@@ -1,11 +1,17 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { AppLayout } from '@/components/layout/app-layout';
-import { TopologyGraph } from '@/components/command-centre/topology-graph';
 import { ActiveAlertsPanel } from '@/components/command-centre/active-alerts-panel';
 import { MetricSparklines } from '@/components/command-centre/metric-sparklines';
 import { EventsTimeline } from '@/components/command-centre/events-timeline';
 import { SystemStatusSummary } from '@/components/command-centre/system-status-summary';
+import { CardSkeleton } from '@/components/shared/loading-skeleton';
+
+const TopologyGraph = dynamic(
+  () => import('@/components/command-centre/topology-graph').then((m) => m.TopologyGraph),
+  { ssr: false, loading: () => <CardSkeleton className="h-[460px]" /> }
+);
 
 export default function CommandCenterPage() {
   return (

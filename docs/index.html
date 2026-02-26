@@ -720,9 +720,9 @@
 <section id="architecture">
   <div class="reveal">
     <div class="section-label">System Design</div>
-    <h2 class="section-title">Stateless by design</h2>
+    <h2 class="section-title">Architecture</h2>
     <p class="section-desc">
-      Helix stores nothing locally. Next.js API routes proxy requests to each backend, handling authentication, validation, and caching.
+      Helix runs as a thin proxy layer with no persistent state. Next.js API routes handle authentication, input validation, and response caching between the browser and each monitoring backend.
     </p>
   </div>
   <div class="arch-container reveal">

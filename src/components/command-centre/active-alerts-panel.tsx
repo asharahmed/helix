@@ -52,7 +52,7 @@ export function ActiveAlertsPanel() {
             {unifiedAlerts.map((alert) => (
               <div
                 key={alert.id}
-                className="flex items-start gap-3 rounded-md border border-border bg-background/50 p-3 hover:border-border-bright transition-colors"
+                className="flex items-start gap-3 rounded-md border border-border bg-background/50 p-3 hover:border-border-bright transition-colors duration-150"
               >
                 <div className="mt-0.5">
                   {alert.severity === 'critical' ? (

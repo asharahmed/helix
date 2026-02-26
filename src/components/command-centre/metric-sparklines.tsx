@@ -120,9 +120,7 @@ function SparklineCard({
 export function MetricSparklines() {
   return (
     <GlowCard>
-      <h2 className="text-sm font-sans font-medium text-text-primary mb-3">
-        System Metrics
-      </h2>
+      <h2 className="card-title mb-3">System Metrics</h2>
       <div className="grid grid-cols-2 gap-3">
         {SPARKLINE_QUERIES.map((config) => (
           <SparklineCard key={config.key} config={config} />

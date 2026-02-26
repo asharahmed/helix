@@ -33,13 +33,13 @@ export function DataCounter({ value, label, color = 'default', className }: Data
   };
 
   return (
-    <div className={cn('flex flex-col items-center', className)}>
+    <div className={cn('flex flex-col', className)}>
       <motion.span
-        className={cn('text-2xl font-mono font-bold tabular-nums', colorClasses[color])}
+        className={cn('text-2xl font-mono font-bold tabular-nums leading-none', colorClasses[color])}
       >
         {displayValue}
       </motion.span>
-      <span className="label-text mt-1">{label}</span>
+      <span className="label-text mt-1.5">{label}</span>
     </div>
   );
 }
