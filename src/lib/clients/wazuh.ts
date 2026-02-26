@@ -47,7 +47,7 @@ async function wazuhFetch(path: string, options: RequestInit = {}): Promise<Resp
 }
 
 export async function getWazuhAgents(): Promise<WazuhAgentResponse> {
-  const res = await wazuhFetch('/agents?select=id,name,ip,status,os,node_name,manager,dateAdd,lastKeepAlive,group,version&limit=500');
+  const res = await wazuhFetch('/agents?limit=500');
   if (!res.ok) throw new Error(`Wazuh agents: ${res.status}`);
   return res.json();
 }
