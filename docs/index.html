@@ -49,6 +49,26 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 0.75rem;
+      z-index: 1000;
+      padding: 0.5rem 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--bg-deep);
+      background: var(--cyan);
+      border: 1px solid var(--cyan);
+      text-decoration: none;
+    }
+
+    .skip-link:focus {
+      left: 0.75rem;
+    }
+
     /* ---- SCANLINE OVERLAY ---- */
     body::after {
       content: '';
@@ -544,6 +564,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 1rem;
       background: linear-gradient(180deg, var(--bg-deep), transparent);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
@@ -582,6 +603,7 @@
       display: flex;
       gap: 2rem;
       list-style: none;
+      align-items: center;
     }
 
     .nav-links a {
@@ -596,6 +618,24 @@
 
     .nav-links a:hover { color: var(--cyan); }
 
+    .nav-toggle {
+      display: none;
+      border: 1px solid var(--border);
+      background: rgba(10, 22, 40, 0.85);
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.45rem 0.65rem;
+      cursor: pointer;
+    }
+
+    .nav-toggle:hover {
+      color: var(--text-primary);
+      border-color: var(--cyan-mid);
+    }
+
     /* ---- RESPONSIVE ---- */
     @media (max-width: 768px) {
       section { padding: 4rem 1.5rem; }
@@ -603,7 +643,26 @@
       .arch-container { padding: 1.5rem; }
       .arch-details { grid-template-columns: 1fr; }
       .stack-grid { grid-template-columns: repeat(2, 1fr); }
-      .nav-links { display: none; }
+      nav { padding: 0.85rem 1rem; }
+      .nav-toggle { display: inline-flex; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: calc(100% + 0.4rem);
+        left: 1rem;
+        right: 1rem;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.25rem;
+        padding: 0.5rem;
+        border: 1px solid var(--border);
+        background: rgba(10, 22, 40, 0.97);
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a {
+        display: block;
+        padding: 0.5rem 0.6rem;
+      }
       .start-step { grid-template-columns: 1fr; gap: 0.5rem; }
       .step-num { text-align: left; }
       .step-content { border-left: none; padding-left: 0; border-top: 1px solid var(--border); padding-top: 1rem; }
@@ -623,21 +682,38 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      body::after { display: none; }
+      .hero-grid,
+      .hero-glow {
+        animation: none !important;
+      }
+    }
   </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to content</a>
 
 <nav>
   <a href="#" class="nav-brand"><svg width="22" height="22" viewBox="0 0 512 512" fill="none"><defs><linearGradient id="ng" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#0088aa"/></linearGradient></defs><path d="M256 32L452 144V368L256 480L60 368V144Z" fill="#0a1628" stroke="#0f2a4a" stroke-width="8"/><path d="M176 120C176 160 336 180 336 220S176 280 176 320S336 380 336 400" stroke="url(#ng)" stroke-width="12" stroke-linecap="round" fill="none"/><path d="M336 120C336 160 176 180 176 220S336 280 336 320S176 380 176 400" stroke="#e8edf4" stroke-width="12" stroke-linecap="round" fill="none" opacity=".7"/></svg>Helix</a>
-  <ul class="nav-links">
+  <ul class="nav-links" id="site-nav">
     <li><a href="#features">Features</a></li>
     <li><a href="#architecture">Architecture</a></li>
     <li><a href="#stack">Stack</a></li>
     <li><a href="#start">Setup</a></li>
-    <li><a href="https://github.com/asharahmed/helix">GitHub</a></li>
+    <li><a href="https://github.com/asharahmed/helix" target="_blank" rel="noopener noreferrer">GitHub</a></li>
   </ul>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
 </nav>
 
+<main id="main-content">
 <!-- ===================== HERO ===================== -->
 <section class="hero">
   <div class="hero-grid"></div>
@@ -651,7 +727,7 @@
       A unified monitoring dashboard that consolidates Prometheus, Alertmanager, Loki, Wazuh, and CrowdSec into one interface. Built for homelab infrastructure.
     </p>
     <div class="hero-actions">
-      <a href="https://github.com/asharahmed/helix" class="btn btn-primary">View on GitHub</a>
+      <a href="https://github.com/asharahmed/helix" class="btn btn-primary" target="_blank" rel="noopener noreferrer">View on GitHub</a>
       <a href="#features" class="btn btn-ghost">Explore</a>
     </div>
   </div>
@@ -822,14 +898,33 @@
     </div>
   </div>
 </section>
+</main>
 
 <footer>
   <p class="footer-text">
-    <a href="https://github.com/asharahmed/helix">Helix</a> is open source.
+    <a href="https://github.com/asharahmed/helix" target="_blank" rel="noopener noreferrer">Helix</a> is open source.
   </p>
 </footer>
 
 <script>
+  const navToggle = document.querySelector('.nav-toggle');
+  const navLinks = document.getElementById('site-nav');
+
+  if (navToggle && navLinks) {
+    navToggle.addEventListener('click', () => {
+      const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+      navToggle.setAttribute('aria-expanded', String(!expanded));
+      navLinks.classList.toggle('open', !expanded);
+    });
+
+    navLinks.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
   // Minimal scroll reveal
   const obs = new IntersectionObserver((entries) => {
     entries.forEach((e) => {

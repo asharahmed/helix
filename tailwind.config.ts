@@ -37,6 +37,7 @@ const config: Config = {
       fontFamily: {
         mono: ['var(--font-jetbrains)', 'JetBrains Mono', 'monospace'],
         sans: ['var(--font-inter)', 'Inter', 'sans-serif'],
+        serif: ['var(--font-serif)', 'Merriweather', 'Georgia', 'serif'],
       },
       animation: {
         'glow-pulse': 'glow-pulse 2s ease-in-out infinite',

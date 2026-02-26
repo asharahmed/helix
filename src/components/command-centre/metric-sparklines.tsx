@@ -1,10 +1,9 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AreaChart, Area, ResponsiveContainer, YAxis } from 'recharts';
 import { Cpu, HardDrive, MemoryStick, Network } from 'lucide-react';
 import { GlowCard } from '@/components/shared/glow-card';
-import { LoadingSkeleton } from '@/components/shared/loading-skeleton';
 import { usePrometheusRange } from '@/lib/hooks';
 
 const SPARKLINE_QUERIES = [
@@ -47,13 +46,17 @@ function SparklineCard({
 }: {
   config: (typeof SPARKLINE_QUERIES)[number];
 }) {
-  // Memoize time window - only recalculate once per minute to prevent
-  // infinite re-fetch loops (new timestamp -> new query key -> new fetch -> re-render)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const { start, end, step } = useMemo(() => {
-    const now = Math.floor(Date.now() / 1000);
-    return { start: String(now - 1800), end: String(now), step: '60' };
-  }, [Math.floor(Date.now() / 60000)]);
+  const [windowEnd, setWindowEnd] = useState(() => Math.floor(Date.now() / 1000));
+
+  useEffect(() => {
+    const updateWindow = () => setWindowEnd(Math.floor(Date.now() / 1000));
+    const interval = setInterval(updateWindow, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const start = String(windowEnd - 1800);
+  const end = String(windowEnd);
+  const step = '60';
 
   const { data, isLoading } = usePrometheusRange(
     config.query,

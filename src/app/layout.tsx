@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Inter, JetBrains_Mono, Merriweather } from 'next/font/google';
 import { Providers } from './providers';
 import '@/styles/globals.css';
 import '@/styles/palantir-theme.css';
@@ -13,6 +13,13 @@ const inter = Inter({
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-jetbrains',
+  display: 'swap',
+});
+
+const merriweather = Merriweather({
+  subsets: ['latin'],
+  weight: ['300', '400', '700', '900'],
+  variable: '--font-serif',
   display: 'swap',
 });
 
@@ -40,7 +47,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`dark ${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={`dark ${inter.variable} ${jetbrainsMono.variable} ${merriweather.variable}`}>
       <body className="min-h-screen bg-background antialiased">
         <Providers>{children}</Providers>
         <div className="scanline-overlay" />

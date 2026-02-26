@@ -51,7 +51,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-30 flex h-11 items-center justify-between border-b border-border bg-background/90 backdrop-blur-md px-6">
       <div className="flex items-center gap-3">
-        <span className="text-sm font-sans font-medium text-text-primary tracking-tight">
+        <span className="text-base font-serif font-semibold text-text-primary tracking-tight">
           {currentPage?.label ?? 'Helix'}
         </span>
         <div className="h-3 w-px bg-border-bright" />

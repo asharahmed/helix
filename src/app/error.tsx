@@ -19,7 +19,7 @@ export default function GlobalError({
       <div className="max-w-md w-full mx-4">
         <div className="glow-card p-8 text-center space-y-4">
           <AlertTriangle className="h-12 w-12 text-amber mx-auto" />
-          <h1 className="text-lg font-sans font-semibold text-text-primary">
+          <h1 className="text-lg font-serif font-semibold text-text-primary tracking-tight">
             System Error
           </h1>
           <p className="text-sm font-mono text-text-secondary">

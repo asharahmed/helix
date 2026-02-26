@@ -55,12 +55,21 @@
 }
 
 @layer components {
-  /* Grid background pattern */
+  /* Polished atmospheric background */
   .grid-bg {
+    background-color: var(--background);
     background-image:
-      linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
+      radial-gradient(120% 90% at 50% -15%, rgba(0, 212, 255, 0.1) 0%, rgba(0, 212, 255, 0) 58%),
+      radial-gradient(90% 80% at 100% 100%, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0) 55%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0) 36%),
+      repeating-linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.014) 0,
+        rgba(255, 255, 255, 0.014) 1px,
+        transparent 1px,
+        transparent 28px
+      );
+    background-size: auto, auto, auto, 140px 140px;
   }
 
   /* CRT scanline overlay */
@@ -150,7 +159,7 @@
   }
 
   .card-title {
-    @apply text-sm font-sans font-medium text-text-primary;
+    @apply text-base font-serif font-semibold text-text-primary tracking-[0.01em];
   }
 
   /* Standardised table styling */
@@ -206,10 +215,28 @@
   }
 
   .page-title {
-    @apply text-lg font-semibold font-sans text-text-primary tracking-tight;
+    @apply text-xl font-semibold font-serif text-text-primary tracking-tight;
   }
 
   .page-subtitle {
-    @apply text-xs font-mono text-muted mt-0.5;
+    @apply text-sm font-sans text-text-secondary mt-0.5 tracking-[0.01em];
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .scanline-overlay {
+    display: none;
   }
 }
