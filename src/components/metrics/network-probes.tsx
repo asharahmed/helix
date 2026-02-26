@@ -41,11 +41,9 @@ export function NetworkProbes() {
 
   return (
     <GlowCard>
-      <div className="flex items-center gap-2 mb-3">
+      <div className="card-header">
         <Globe className="h-4 w-4 text-cyan" />
-        <h2 className="text-sm font-sans font-medium text-text-primary">
-          Blackbox Probes
-        </h2>
+        <h2 className="card-title">Blackbox Probes</h2>
       </div>
 
       {isLoading ? (

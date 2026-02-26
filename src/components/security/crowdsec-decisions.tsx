@@ -20,11 +20,9 @@ export function CrowdSecDecisions() {
 
   return (
     <GlowCard>
-      <div className="flex items-center gap-2 mb-3">
+      <div className="card-header">
         <ShieldBan className="h-4 w-4 text-red" />
-        <h2 className="text-sm font-sans font-medium text-text-primary">
-          CrowdSec Decisions
-        </h2>
+        <h2 className="card-title">CrowdSec Decisions</h2>
         {decisions && decisions.length > 0 && (
           <Badge variant="red">{decisions.length}</Badge>
         )}
@@ -40,37 +38,34 @@ export function CrowdSecDecisions() {
         </p>
       ) : (
         <ScrollArea className="h-[300px]">
-          <table className="w-full">
+          <table className="data-table">
             <thead>
-              <tr className="border-b border-border">
-                <th className="label-text text-left pb-2 pr-3">IP/Value</th>
-                <th className="label-text text-left pb-2 pr-3">Scenario</th>
-                <th className="label-text text-left pb-2 pr-3">Type</th>
-                <th className="label-text text-left pb-2 pr-3">Duration</th>
-                <th className="label-text text-left pb-2">Actions</th>
+              <tr>
+                <th>IP/Value</th>
+                <th>Scenario</th>
+                <th>Type</th>
+                <th>Duration</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {decisions.map((decision) => (
-                <tr
-                  key={decision.id}
-                  className="border-b border-border/50 hover:bg-surface/50 transition-colors"
-                >
-                  <td className="py-2 pr-3">
+                <tr key={decision.id}>
+                  <td>
                     <span className="text-sm font-mono text-red">{decision.value}</span>
                   </td>
-                  <td className="py-2 pr-3">
+                  <td>
                     <span className="text-xs font-mono text-text-secondary truncate block max-w-[200px]">
                       {decision.scenario}
                     </span>
                   </td>
-                  <td className="py-2 pr-3">
+                  <td>
                     <Badge variant="red">{decision.type}</Badge>
                   </td>
-                  <td className="py-2 pr-3">
+                  <td>
                     <span className="text-xs font-mono text-muted">{decision.duration}</span>
                   </td>
-                  <td className="py-2">
+                  <td>
                     <Button
                       variant="destructive"
                       size="sm"

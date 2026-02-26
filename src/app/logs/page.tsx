@@ -7,9 +7,10 @@ export default function LogsPage() {
   return (
     <AppLayout>
       <div className="space-y-4">
-        <h1 className="text-xl font-semibold font-sans text-text-primary">
-          Logs
-        </h1>
+        <div>
+          <h1 className="page-title">Logs</h1>
+          <p className="page-subtitle">Loki log streams</p>
+        </div>
         <LogStream />
       </div>
     </AppLayout>

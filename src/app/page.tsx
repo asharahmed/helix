@@ -11,10 +11,11 @@ export default function CommandCenterPage() {
   return (
     <AppLayout>
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold font-sans text-text-primary">
-            Command Centre
-          </h1>
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">Command Centre</h1>
+            <p className="page-subtitle">Infrastructure overview</p>
+          </div>
           <span className="label-text">HELIX v1.1</span>
         </div>
 

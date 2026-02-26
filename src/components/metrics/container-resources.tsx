@@ -8,6 +8,7 @@ import { LoadingSkeleton } from '@/components/shared/loading-skeleton';
 import { ErrorState } from '@/components/shared/error-state';
 import { usePrometheusQuery } from '@/lib/hooks';
 import { formatBytes } from '@/lib/utils';
+import { CHART_AXIS, CHART_TOOLTIP } from '@/lib/chart-theme';
 
 export function ContainerResources() {
   const { data: cpuData, isLoading: cpuLoading } = usePrometheusQuery(
@@ -45,11 +46,9 @@ export function ContainerResources() {
 
   return (
     <GlowCard>
-      <div className="flex items-center gap-2 mb-3">
+      <div className="card-header">
         <Box className="h-4 w-4 text-cyan" />
-        <h2 className="text-sm font-sans font-medium text-text-primary">
-          Container Resources
-        </h2>
+        <h2 className="card-title">Container Resources</h2>
       </div>
 
       {isLoading ? (
@@ -59,28 +58,22 @@ export function ContainerResources() {
       ) : (
         <ResponsiveContainer width="100%" height={350}>
           <BarChart data={chartData} layout="vertical" margin={{ left: 100 }}>
-            <XAxis type="number" tick={{ fill: '#6b7280', fontSize: 10, fontFamily: 'JetBrains Mono' }} />
+            <XAxis type="number" tick={CHART_AXIS} />
             <YAxis
               type="category"
               dataKey="name"
-              tick={{ fill: '#e0e0e0', fontSize: 10, fontFamily: 'JetBrains Mono' }}
+              tick={{ ...CHART_AXIS, fill: '#e0e0e0' }}
               width={100}
             />
             <Tooltip
-              contentStyle={{
-                backgroundColor: '#0f0f1a',
-                border: '1px solid #1a1a2e',
-                borderRadius: 8,
-                fontSize: 12,
-                fontFamily: 'JetBrains Mono',
-              }}
+              {...CHART_TOOLTIP}
               formatter={(value: number, name: string) => {
                 if (name === 'memory') return [`${value.toFixed(0)} MB`, 'Memory'];
                 return [`${value.toFixed(1)}%`, 'CPU'];
               }}
             />
             <Legend
-              wrapperStyle={{ fontSize: 10, fontFamily: 'JetBrains Mono' }}
+              wrapperStyle={{ fontSize: CHART_AXIS.fontSize, fontFamily: CHART_AXIS.fontFamily }}
             />
             <Bar dataKey="memory" fill="#00d4ff" name="Memory (MB)" radius={[0, 4, 4, 0]} barSize={10} />
           </BarChart>

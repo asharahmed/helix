@@ -14,6 +14,7 @@ import { GlowCard } from '@/components/shared/glow-card';
 import { LoadingSkeleton } from '@/components/shared/loading-skeleton';
 import { ErrorState } from '@/components/shared/error-state';
 import { usePrometheusRange } from '@/lib/hooks';
+import { CHART_AXIS, CHART_GRID, CHART_TOOLTIP } from '@/lib/chart-theme';
 
 interface TimeSeriesChartProps {
   title: string;
@@ -61,9 +62,7 @@ export function TimeSeriesChart({
 
   return (
     <GlowCard>
-      <h3 className="text-sm font-sans font-medium text-text-primary mb-3">
-        {title}
-      </h3>
+      <h3 className="card-title mb-3">{title}</h3>
 
       {isLoading ? (
         <div className="h-[200px]"><LoadingSkeleton lines={4} /></div>
@@ -82,27 +81,21 @@ export function TimeSeriesChart({
                 <stop offset="100%" stopColor={color} stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1a1a2e" />
+            <CartesianGrid {...CHART_GRID} />
             <XAxis
               dataKey="time"
               tickFormatter={formatTime}
-              tick={{ fill: '#6b7280', fontSize: 10, fontFamily: 'JetBrains Mono' }}
-              stroke="#1a1a2e"
+              tick={CHART_AXIS}
+              stroke={CHART_GRID.stroke}
             />
             <YAxis
               tickFormatter={(v) => formatValue(v)}
-              tick={{ fill: '#6b7280', fontSize: 10, fontFamily: 'JetBrains Mono' }}
-              stroke="#1a1a2e"
+              tick={CHART_AXIS}
+              stroke={CHART_GRID.stroke}
               width={60}
             />
             <Tooltip
-              contentStyle={{
-                backgroundColor: '#0f0f1a',
-                border: '1px solid #1a1a2e',
-                borderRadius: 8,
-                fontSize: 12,
-                fontFamily: 'JetBrains Mono',
-              }}
+              {...CHART_TOOLTIP}
               labelFormatter={(ts) => formatTime(ts as number)}
               formatter={(value: number) => [formatValue(value), title]}
             />

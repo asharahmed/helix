@@ -43,6 +43,7 @@ const config: Config = {
         'data-flow': 'data-flow 1.5s ease-in-out infinite',
         scanline: 'scanline 8s linear infinite',
         'fade-in': 'fade-in 0.3s ease-out',
+        'page-enter': 'page-enter 0.25s ease-out',
       },
       keyframes: {
         'glow-pulse': {
@@ -59,6 +60,10 @@ const config: Config = {
         },
         'fade-in': {
           '0%': { opacity: '0', transform: 'translateY(4px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'page-enter': {
+          '0%': { opacity: '0', transform: 'translateY(6px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },

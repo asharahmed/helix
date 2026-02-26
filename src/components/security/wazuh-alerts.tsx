@@ -11,6 +11,7 @@ import { ErrorState } from '@/components/shared/error-state';
 import { useWazuhAlerts } from '@/lib/hooks';
 import { formatRelativeTime } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { CHART_AXIS, CHART_TOOLTIP } from '@/lib/chart-theme';
 
 export function WazuhAlertsPanel() {
   const [timeRange, setTimeRange] = useState('60');
@@ -36,11 +37,9 @@ export function WazuhAlertsPanel() {
   return (
     <GlowCard>
       <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
+        <div className="card-header !mb-0">
           <Shield className="h-4 w-4 text-amber" />
-          <h2 className="text-sm font-sans font-medium text-text-primary">
-            Wazuh Alerts by Group
-          </h2>
+          <h2 className="card-title">Wazuh Alerts by Group</h2>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger className="w-[100px] h-7 text-xs">
@@ -66,22 +65,14 @@ export function WazuhAlertsPanel() {
       ) : (
         <ResponsiveContainer width="100%" height={250}>
           <BarChart data={groupedData} layout="vertical" margin={{ left: 80 }}>
-            <XAxis type="number" tick={{ fill: '#9ca3af', fontSize: 10, fontFamily: 'JetBrains Mono' }} />
+            <XAxis type="number" tick={CHART_AXIS} />
             <YAxis
               type="category"
               dataKey="name"
-              tick={{ fill: '#e0e0e0', fontSize: 10, fontFamily: 'JetBrains Mono' }}
+              tick={{ ...CHART_AXIS, fill: '#e0e0e0' }}
               width={80}
             />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: '#0f0f1a',
-                border: '1px solid #1a1a2e',
-                borderRadius: 8,
-                fontSize: 12,
-                fontFamily: 'JetBrains Mono',
-              }}
-            />
+            <Tooltip {...CHART_TOOLTIP} />
             <Bar dataKey="count" radius={[0, 4, 4, 0]}>
               {groupedData.map((_, i) => (
                 <Cell key={i} fill={BAR_COLORS[i % BAR_COLORS.length]} />
@@ -100,7 +91,7 @@ export function WazuhAlertsPanel() {
               {data.hits.hits.slice(0, 20).map((hit) => (
                 <div
                   key={hit._id}
-                  className="flex items-center gap-2 text-xs font-mono py-1 border-b border-border/30"
+                  className="flex items-center gap-2 text-xs font-mono py-1.5 border-b border-border/30"
                 >
                   <Badge
                     variant={

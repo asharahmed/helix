@@ -143,6 +143,61 @@
   }
 
   .label-text {
-    @apply font-sans text-xs text-text-secondary uppercase tracking-wider;
+    @apply font-sans text-[10px] text-text-secondary uppercase tracking-wider font-medium;
+  }
+
+  /* Card header pattern: icon + title + optional badge */
+  .card-header {
+    @apply flex items-center gap-2 mb-3;
+  }
+
+  .card-title {
+    @apply text-sm font-sans font-medium text-text-primary;
+  }
+
+  /* Standardised table styling */
+  .data-table {
+    @apply w-full;
+  }
+
+  .data-table thead tr {
+    @apply border-b border-border;
+  }
+
+  .data-table th {
+    @apply text-left pb-2.5 pr-4 font-sans text-[10px] text-text-secondary uppercase tracking-wider font-medium;
+  }
+
+  .data-table th:last-child {
+    @apply pr-0;
+  }
+
+  .data-table tbody tr {
+    @apply border-b border-border/40 transition-colors;
+  }
+
+  .data-table tbody tr:hover {
+    @apply bg-surface/50;
+  }
+
+  .data-table td {
+    @apply py-2.5 pr-4;
+  }
+
+  .data-table td:last-child {
+    @apply pr-0;
+  }
+
+  /* Page header */
+  .page-header {
+    @apply flex items-center justify-between;
+  }
+
+  .page-title {
+    @apply text-lg font-semibold font-sans text-text-primary tracking-tight;
+  }
+
+  .page-subtitle {
+    @apply text-xs font-mono text-muted mt-0.5;
   }
 }

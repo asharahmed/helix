@@ -16,11 +16,9 @@ export function FIMEvents() {
 
   return (
     <GlowCard>
-      <div className="flex items-center gap-2 mb-3">
+      <div className="card-header">
         <FileWarning className="h-4 w-4 text-amber" />
-        <h2 className="text-sm font-sans font-medium text-text-primary">
-          File Integrity Events
-        </h2>
+        <h2 className="card-title">File Integrity Events</h2>
         {events.length > 0 && (
           <Badge variant="amber">{events.length}</Badge>
         )}
@@ -36,13 +34,13 @@ export function FIMEvents() {
         </p>
       ) : (
         <ScrollArea className="h-[300px]">
-          <table className="w-full">
+          <table className="data-table">
             <thead>
-              <tr className="border-b border-border">
-                <th className="label-text text-left pb-2 pr-3">Time</th>
-                <th className="label-text text-left pb-2 pr-3">Agent</th>
-                <th className="label-text text-left pb-2 pr-3">Path</th>
-                <th className="label-text text-left pb-2 pr-3">Event</th>
+              <tr>
+                <th>Time</th>
+                <th>Agent</th>
+                <th>Path</th>
+                <th>Event</th>
               </tr>
             </thead>
             <tbody>
@@ -52,26 +50,23 @@ export function FIMEvents() {
                 if (!syscheck) return null;
 
                 return (
-                  <tr
-                    key={hit._id}
-                    className="border-b border-border/50 hover:bg-surface/50 transition-colors"
-                  >
-                    <td className="py-2 pr-3">
+                  <tr key={hit._id}>
+                    <td>
                       <span className="text-xs font-mono text-muted">
                         {formatRelativeTime(src.timestamp)}
                       </span>
                     </td>
-                    <td className="py-2 pr-3">
+                    <td>
                       <span className="text-xs font-mono text-text-primary">
                         {src.agent.name}
                       </span>
                     </td>
-                    <td className="py-2 pr-3">
+                    <td>
                       <span className="text-xs font-mono text-cyan truncate block max-w-[250px]">
                         {syscheck.path}
                       </span>
                     </td>
-                    <td className="py-2 pr-3">
+                    <td>
                       <Badge
                         variant={
                           syscheck.event === 'deleted'

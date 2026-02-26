@@ -8,9 +8,10 @@ export default function AlertsPage() {
   return (
     <AppLayout>
       <div className="space-y-4">
-        <h1 className="text-xl font-semibold font-sans text-text-primary">
-          Alerts
-        </h1>
+        <div>
+          <h1 className="page-title">Alerts</h1>
+          <p className="page-subtitle">Prometheus and Wazuh unified view</p>
+        </div>
 
         <div className="grid grid-cols-12 gap-4">
           <div className="col-span-12 lg:col-span-9">

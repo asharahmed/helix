@@ -31,10 +31,11 @@ export default function MetricsPage() {
   return (
     <AppLayout>
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold font-sans text-text-primary">
-            Metrics
-          </h1>
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">Metrics</h1>
+            <p className="page-subtitle">System and container performance</p>
+          </div>
           <TimeRangePicker value={timeRange} onChange={setTimeRange} />
         </div>
 

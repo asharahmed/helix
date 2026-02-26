@@ -32,11 +32,9 @@ export function AgentGrid() {
 
   return (
     <GlowCard>
-      <div className="flex items-center gap-2 mb-3">
+      <div className="card-header">
         <Users className="h-4 w-4 text-cyan" />
-        <h2 className="text-sm font-sans font-medium text-text-primary">
-          Wazuh Agents
-        </h2>
+        <h2 className="card-title">Wazuh Agents</h2>
         {agents.length > 0 && (
           <Badge variant="cyan">{agents.length}</Badge>
         )}

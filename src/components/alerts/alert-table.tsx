@@ -101,25 +101,25 @@ export function AlertTable() {
           <ErrorState message="Failed to load alerts" />
         ) : (
           <ScrollArea className="h-[calc(100vh-280px)]">
-            <table className="w-full">
+            <table className="data-table">
               <thead>
-                <tr className="border-b border-border">
-                  <th className="label-text text-left pb-2 pr-4">Severity</th>
-                  <th className="label-text text-left pb-2 pr-4">Alert</th>
-                  <th className="label-text text-left pb-2 pr-4">Source</th>
-                  <th className="label-text text-left pb-2 pr-4">Status</th>
-                  <th className="label-text text-left pb-2 pr-4">Time</th>
-                  <th className="label-text text-left pb-2">Actions</th>
+                <tr>
+                  <th>Severity</th>
+                  <th>Alert</th>
+                  <th>Source</th>
+                  <th>Status</th>
+                  <th>Time</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredAlerts.map((alert) => (
                   <tr
                     key={alert.id}
-                    className="border-b border-border/50 hover:bg-surface/50 cursor-pointer transition-colors"
+                    className="cursor-pointer"
                     onClick={() => setSelectedAlert(alert)}
                   >
-                    <td className="py-2.5 pr-4">
+                    <td>
                       <Badge
                         variant={
                           alert.severity === 'critical'
@@ -132,7 +132,7 @@ export function AlertTable() {
                         {alert.severity}
                       </Badge>
                     </td>
-                    <td className="py-2.5 pr-4">
+                    <td>
                       <div>
                         <span className={`text-sm font-mono ${severityColor(alert.severity)}`}>
                           {truncate(alert.title, 50)}
@@ -144,22 +144,22 @@ export function AlertTable() {
                         )}
                       </div>
                     </td>
-                    <td className="py-2.5 pr-4">
+                    <td>
                       <Badge variant={alert.source === 'prometheus' ? 'cyan' : 'amber'}>
                         {alert.source}
                       </Badge>
                     </td>
-                    <td className="py-2.5 pr-4">
+                    <td>
                       <span className="text-xs font-mono text-text-secondary">
                         {alert.status}
                       </span>
                     </td>
-                    <td className="py-2.5 pr-4">
+                    <td>
                       <span className="text-xs font-mono text-muted">
                         {formatRelativeTime(alert.timestamp)}
                       </span>
                     </td>
-                    <td className="py-2.5">
+                    <td>
                       {alert.source === 'prometheus' && (
                         <Button
                           variant="ghost"

@@ -27,18 +27,14 @@ export function ActiveAlertsPanel() {
 
   return (
     <GlowCard variant={unifiedAlerts.some((a) => a.severity === 'critical') ? 'red' : 'default'}>
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <Bell className="h-4 w-4 text-cyan" />
-          <h2 className="text-sm font-sans font-medium text-text-primary">
-            Active Alerts
-          </h2>
-          {unifiedAlerts.length > 0 && (
-            <Badge variant={unifiedAlerts.some((a) => a.severity === 'critical') ? 'red' : 'amber'}>
-              {unifiedAlerts.length}
-            </Badge>
-          )}
-        </div>
+      <div className="card-header">
+        <Bell className="h-4 w-4 text-cyan" />
+        <h2 className="card-title">Active Alerts</h2>
+        {unifiedAlerts.length > 0 && (
+          <Badge variant={unifiedAlerts.some((a) => a.severity === 'critical') ? 'red' : 'amber'}>
+            {unifiedAlerts.length}
+          </Badge>
+        )}
       </div>
 
       {isLoading ? (

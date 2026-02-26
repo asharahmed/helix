@@ -31,20 +31,20 @@ export function Header() {
   );
 
   return (
-    <header className="sticky top-0 z-30 flex h-12 items-center justify-between border-b border-border bg-background/80 backdrop-blur-sm px-6">
+    <header className="sticky top-0 z-30 flex h-11 items-center justify-between border-b border-border bg-background/90 backdrop-blur-md px-6">
       <div className="flex items-center gap-3">
-        <span className="text-sm font-sans font-medium text-text-primary">
+        <span className="text-sm font-sans font-medium text-text-primary tracking-tight">
           {currentPage?.label ?? 'Helix'}
         </span>
-        <span className="text-xs text-muted">{'//'}</span>
-        <span className="label-text">OPERATIONAL</span>
+        <div className="h-3 w-px bg-border-bright" />
+        <span className="label-text text-green">OPERATIONAL</span>
       </div>
 
       <div className="flex items-center gap-4">
         <RefreshControl />
-        <div className="flex items-center gap-1.5 text-text-secondary">
-          <Clock className="h-3.5 w-3.5" />
-          <span className="font-mono text-xs tabular-nums">{time}</span>
+        <div className="flex items-center gap-1.5 text-muted">
+          <Clock className="h-3 w-3" />
+          <span className="font-mono text-[10px] tabular-nums">{time}</span>
         </div>
       </div>
     </header>

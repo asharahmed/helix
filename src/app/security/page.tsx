@@ -10,9 +10,10 @@ export default function SecurityPage() {
   return (
     <AppLayout>
       <div className="space-y-4">
-        <h1 className="text-xl font-semibold font-sans text-text-primary">
-          Security
-        </h1>
+        <div>
+          <h1 className="page-title">Security</h1>
+          <p className="page-subtitle">Wazuh agents, HIDS alerts, FIM, and CrowdSec</p>
+        </div>
 
         <div className="grid grid-cols-12 gap-4">
           {/* Wazuh Alerts */}
