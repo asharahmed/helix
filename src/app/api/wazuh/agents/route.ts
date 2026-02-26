@@ -17,8 +17,8 @@ export async function POST(req: NextRequest) {
   try {
     const { action, agentId } = await req.json();
 
-    if (!agentId) {
-      return NextResponse.json({ error: 'Missing agentId' }, { status: 400 });
+    if (!agentId || typeof agentId !== 'string' || agentId.length > 20) {
+      return NextResponse.json({ error: 'Invalid agentId' }, { status: 400 });
     }
 
     let result;

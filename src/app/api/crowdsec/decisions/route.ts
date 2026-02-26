@@ -19,9 +19,13 @@ export async function DELETE(req: NextRequest) {
   if (!id) {
     return NextResponse.json({ error: 'Missing decision ID' }, { status: 400 });
   }
+  const numericId = parseInt(id, 10);
+  if (isNaN(numericId) || numericId < 0) {
+    return NextResponse.json({ error: 'Invalid decision ID' }, { status: 400 });
+  }
 
   try {
-    await deleteCrowdSecDecision(parseInt(id));
+    await deleteCrowdSecDecision(numericId);
     return NextResponse.json({ status: 'ok' });
   } catch (err) {
     return NextResponse.json(

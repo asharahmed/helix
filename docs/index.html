@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Helix - Unified Infrastructure Monitoring</title>
+  <meta name="description" content="A monitoring dashboard that consolidates Prometheus, Alertmanager, Loki, Wazuh, and CrowdSec into a single interface." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cyan: #00d4ff;
+      --cyan-dim: #00d4ff22;
+      --cyan-mid: #00d4ff44;
+      --cyan-glow: #00d4ff66;
+      --amber: #ffb800;
+      --red: #ff3b4f;
+      --green: #00e676;
+      --bg-deep: #050a12;
+      --bg-card: #0a1628;
+      --bg-card-hover: #0e1e38;
+      --border: #0f2a4a;
+      --text-primary: #e8edf4;
+      --text-secondary: #6b7d99;
+      --text-dim: #3a4d6a;
+      --font-display: 'Chakra Petch', sans-serif;
+      --font-body: 'Outfit', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---- SCANLINE OVERLAY ---- */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.03) 2px,
+        rgba(0, 0, 0, 0.03) 4px
+      );
+    }
+
+    /* ---- ANIMATED GRID HERO BG ---- */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--cyan-dim) 1px, transparent 1px),
+        linear-gradient(90deg, var(--cyan-dim) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: grid-drift 20s linear infinite;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 70%);
+    }
+
+    @keyframes grid-drift {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(60px, 60px); }
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--cyan-dim) 0%, transparent 70%);
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: glow-pulse 4s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes glow-pulse {
+      0% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.15); }
+    }
+
+    .hero-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, var(--bg-deep) 100%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 2rem;
+      max-width: 800px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      border: 1px solid var(--cyan-mid);
+      padding: 0.35rem 1rem;
+      margin-bottom: 1.5rem;
+      background: var(--cyan-dim);
+      animation: badge-in 0.8s ease-out both;
+    }
+
+    @keyframes badge-in {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 8vw, 6.5rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--text-primary) 40%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: title-in 1s ease-out 0.2s both;
+    }
+
+    @keyframes title-in {
+      from { opacity: 0; transform: translateY(20px); letter-spacing: 0.3em; }
+      to { opacity: 1; transform: translateY(0); letter-spacing: 0.08em; }
+    }
+
+    .hero-sub {
+      font-family: var(--font-body);
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      font-weight: 300;
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin: 1.25rem auto 2.5rem;
+      animation: fade-up 1s ease-out 0.5s both;
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fade-up 1s ease-out 0.7s both;
+    }
+
+    .btn {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.75rem 2rem;
+      border: 1px solid var(--border);
+      transition: all 0.25s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .btn-primary {
+      background: var(--cyan);
+      color: var(--bg-deep);
+      border-color: var(--cyan);
+    }
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--cyan);
+      box-shadow: 0 0 20px var(--cyan-dim), inset 0 0 20px var(--cyan-dim);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border-color: var(--border);
+    }
+    .btn-ghost:hover {
+      color: var(--text-primary);
+      border-color: var(--text-secondary);
+    }
+
+    /* ---- SECTION LAYOUT ---- */
+    section {
+      padding: 6rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 1rem;
+    }
+
+    .section-desc {
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin-bottom: 3rem;
+      font-weight: 300;
+    }
+
+    .divider {
+      max-width: 1100px;
+      margin: 0 auto;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+    }
+
+    /* ---- FEATURES GRID ---- */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      padding: 2rem;
+      transition: background 0.3s ease;
+      position: relative;
+    }
+
+    .feature-card:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--cyan);
+      transition: width 0.4s ease;
+    }
+
+    .feature-card:hover::before {
+      width: 100%;
+    }
+
+    .feature-icon {
+      width: 36px;
+      height: 36px;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      color: var(--cyan);
+    }
+
+    .feature-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .feature-name {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-desc {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    /* ---- ARCHITECTURE ---- */
+    .arch-container {
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .arch-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--amber), var(--red));
+    }
+
+    .arch-diagram {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      overflow-x: auto;
+      white-space: pre;
+      margin-bottom: 2rem;
+      padding: 1rem 0;
+    }
+
+    .arch-diagram .hl { color: var(--cyan); }
+    .arch-diagram .hl2 { color: var(--amber); }
+    .arch-diagram .hl3 { color: var(--green); }
+    .arch-diagram .dim { color: var(--text-dim); }
+
+    .arch-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .arch-detail {
+      padding: 1rem;
+      border-left: 2px solid var(--border);
+      transition: border-color 0.3s ease;
+    }
+
+    .arch-detail:hover {
+      border-color: var(--cyan);
+    }
+
+    .arch-detail-title {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.35rem;
+    }
+
+    .arch-detail-text {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    /* ---- TECH STACK ---- */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .stack-item {
+      border: 1px solid var(--border);
+      padding: 1rem 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--text-secondary);
+      background: var(--bg-card);
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stack-item::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--cyan);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .stack-item:hover {
+      color: var(--text-primary);
+      border-color: var(--cyan-mid);
+    }
+
+    .stack-item:hover::after {
+      transform: scaleX(1);
+    }
+
+    .stack-category {
+      display: block;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 0.25rem;
+    }
+
+    /* ---- GETTING STARTED ---- */
+    .start-steps {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .start-step {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .step-num {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--cyan);
+      opacity: 0.3;
+      line-height: 1;
+      padding-top: 0.25rem;
+      min-width: 2rem;
+      text-align: right;
+    }
+
+    .step-content {
+      border-left: 1px solid var(--border);
+      padding-left: 1.5rem;
+    }
+
+    .step-title {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      margin-bottom: 0.5rem;
+    }
+
+    .step-text {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+      margin-bottom: 0.75rem;
+    }
+
+    pre.code-block {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    pre.code-block .cmd { color: var(--cyan); }
+    pre.code-block .comment { color: var(--text-dim); }
+
+    /* ---- FOOTER ---- */
+    footer {
+      padding: 3rem 2rem;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-text {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+    }
+
+    .footer-text a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-text a:hover {
+      color: var(--cyan);
+    }
+
+    /* ---- NAV ---- */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(180deg, var(--bg-deep), transparent);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .nav-brand {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--cyan); }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 768px) {
+      section { padding: 4rem 1.5rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      .arch-container { padding: 1.5rem; }
+      .arch-details { grid-template-columns: 1fr; }
+      .stack-grid { grid-template-columns: repeat(2, 1fr); }
+      .nav-links { display: none; }
+      .start-step { grid-template-columns: 1fr; gap: 0.5rem; }
+      .step-num { text-align: left; }
+      .step-content { border-left: none; padding-left: 0; border-top: 1px solid var(--border); padding-top: 1rem; }
+    }
+
+    @media (max-width: 480px) {
+      .stack-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ---- SCROLL REVEAL ---- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-brand">Helix</a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#stack">Stack</a></li>
+    <li><a href="#start">Setup</a></li>
+    <li><a href="https://github.com/asharahmed/helix">GitHub</a></li>
+  </ul>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Infrastructure Monitoring</div>
+    <h1 class="hero-title">Helix</h1>
+    <p class="hero-sub">
+      A unified monitoring dashboard that consolidates Prometheus, Alertmanager, Loki, Wazuh, and CrowdSec into one interface. Built for homelab infrastructure.
+    </p>
+    <div class="hero-actions">
+      <a href="https://github.com/asharahmed/helix" class="btn btn-primary">View on GitHub</a>
+      <a href="#features" class="btn btn-ghost">Explore</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===================== FEATURES ===================== -->
+<section id="features">
+  <div class="reveal">
+    <div class="section-label">Capabilities</div>
+    <h2 class="section-title">Five views. One surface.</h2>
+    <p class="section-desc">
+      Stop switching between Grafana, the Wazuh dashboard, and CrowdSec's CLI. Helix surfaces everything in one place with real-time updates.
+    </p>
+  </div>
+  <div class="features-grid reveal">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m10-10h-4M6 12H2m15.07-7.07l-2.83 2.83M9.76 14.24l-2.83 2.83m11.14 0l-2.83-2.83M9.76 9.76L6.93 6.93"/></svg>
+      </div>
+      <div class="feature-name">Command Center</div>
+      <p class="feature-desc">D3 force-directed topology graph of your service mesh, active alerts from Prometheus and Wazuh, system metric sparklines, and a live event timeline.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="color: var(--amber);">
+        <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="feature-name">Alerts</div>
+      <p class="feature-desc">Unified alert table across Prometheus and Wazuh with search, source and severity filtering, detail expansion, and the ability to create Alertmanager silences directly.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="color: var(--red);">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="feature-name">Security</div>
+      <p class="feature-desc">Wazuh agent inventory with status and scan triggers, HIDS alerts, file integrity monitoring events, and CrowdSec ban decisions with confirmation-gated unbanning.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="color: var(--green);">
+        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <div class="feature-name">Metrics</div>
+      <p class="feature-desc">Time-series charts for CPU, memory, disk, and network. Per-container resource usage and network probe results backed by Prometheus range queries.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="color: #b388ff;">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </div>
+      <div class="feature-name">Logs</div>
+      <p class="feature-desc">Loki log viewer with container filtering, text search, and virtualized scrolling. Supports both polling and live tail mode via Server-Sent Events.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <div class="feature-name">Real-Time</div>
+      <p class="feature-desc">Alertmanager and Wazuh push webhooks into an in-memory event bus. Browsers subscribe over SSE. UI refreshes instantly without waiting for the next poll cycle.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===================== ARCHITECTURE ===================== -->
+<section id="architecture">
+  <div class="reveal">
+    <div class="section-label">System Design</div>
+    <h2 class="section-title">Stateless by design</h2>
+    <p class="section-desc">
+      Helix stores nothing locally. Next.js API routes proxy requests to each backend, handling authentication, validation, and caching.
+    </p>
+  </div>
+  <div class="arch-container reveal">
+    <div class="arch-diagram"><span class="dim">               </span><span class="hl2">Caddy</span><span class="dim"> (TLS + </span><span class="hl2">Authelia</span><span class="dim">)</span>
+<span class="dim">                      |</span>
+<span class="dim">                    </span><span class="hl">Helix</span><span class="dim"> (Next.js)</span>
+<span class="dim">                  /   |   |   \    \</span>
+<span class="dim">           </span><span class="hl3">Prometheus</span><span class="dim">  |  </span><span class="hl3">Loki</span><span class="dim">  |   </span><span class="hl3">CrowdSec</span>
+<span class="dim">          </span><span class="hl3">Alertmanager</span><span class="dim"> |        |</span>
+<span class="dim">                  </span><span class="hl3">Wazuh Manager</span>
+<span class="dim">                  </span><span class="hl3">Wazuh Indexer</span></div>
+    <div class="arch-details">
+      <div class="arch-detail">
+        <div class="arch-detail-title">Proxy Layer</div>
+        <p class="arch-detail-text">API routes handle auth, input validation, and response caching. No direct client-to-backend communication.</p>
+      </div>
+      <div class="arch-detail">
+        <div class="arch-detail-title">Event Bus</div>
+        <p class="arch-detail-text">Webhooks from Alertmanager and Wazuh feed an in-memory pub/sub. Browsers subscribe over SSE for instant updates.</p>
+      </div>
+      <div class="arch-detail">
+        <div class="arch-detail-title">LRU Cache</div>
+        <p class="arch-detail-text">Server-side cache with 50 entries, 5-second TTL, and 50MB cap. Reduces redundant upstream calls across connected clients.</p>
+      </div>
+      <div class="arch-detail">
+        <div class="arch-detail-title">Memory Bound</div>
+        <p class="arch-detail-text">Capped at 512MB. Typical usage sits around 150-250MB. Runs on Node.js 20 Alpine in production.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===================== TECH STACK ===================== -->
+<section id="stack">
+  <div class="reveal">
+    <div class="section-label">Built With</div>
+    <h2 class="section-title">Tech Stack</h2>
+    <p class="section-desc">Production-grade tooling for a responsive, real-time monitoring experience.</p>
+  </div>
+  <div class="stack-grid reveal">
+    <div class="stack-item"><span class="stack-category">Framework</span>Next.js 14</div>
+    <div class="stack-item"><span class="stack-category">Data</span>TanStack Query v5</div>
+    <div class="stack-item"><span class="stack-category">Visualization</span>D3 Force</div>
+    <div class="stack-item"><span class="stack-category">Charts</span>Recharts</div>
+    <div class="stack-item"><span class="stack-category">Animation</span>Framer Motion</div>
+    <div class="stack-item"><span class="stack-category">Styling</span>Tailwind CSS</div>
+    <div class="stack-item"><span class="stack-category">Primitives</span>Radix UI</div>
+    <div class="stack-item"><span class="stack-category">Virtualization</span>TanStack Virtual</div>
+    <div class="stack-item"><span class="stack-category">TLS</span>undici</div>
+    <div class="stack-item"><span class="stack-category">Runtime</span>Node.js 20</div>
+    <div class="stack-item"><span class="stack-category">Canvas</span>HTML5 Canvas</div>
+    <div class="stack-item"><span class="stack-category">Transport</span>SSE</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===================== GETTING STARTED ===================== -->
+<section id="start">
+  <div class="reveal">
+    <div class="section-label">Quickstart</div>
+    <h2 class="section-title">Getting Started</h2>
+    <p class="section-desc">
+      Helix assumes your backend services (Prometheus, Alertmanager, Loki, Wazuh, CrowdSec) are already running.
+    </p>
+  </div>
+  <div class="start-steps reveal">
+    <div class="start-step">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <div class="step-title">Clone and configure</div>
+        <p class="step-text">Copy the example environment file and fill in your Wazuh passwords and webhook secret.</p>
+        <pre class="code-block"><span class="cmd">git clone</span> https://github.com/asharahmed/helix.git
+<span class="cmd">cd</span> helix
+<span class="cmd">cp</span> .env.example .env.local</pre>
+      </div>
+    </div>
+    <div class="start-step">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <div class="step-title">Development</div>
+        <p class="step-text">Install dependencies and start the dev server. Backend services must be reachable from your machine.</p>
+        <pre class="code-block"><span class="cmd">npm install</span>
+<span class="cmd">npm run dev</span>
+<span class="comment"># Available at http://localhost:3000</span></pre>
+      </div>
+    </div>
+    <div class="start-step">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <div class="step-title">Production</div>
+        <p class="step-text">Deploy with Docker Compose. The container exposes no ports directly. Caddy reaches it over the Docker network.</p>
+        <pre class="code-block"><span class="cmd">docker compose</span> -f docker-compose.yml -f docker-compose.helix.yml <span class="cmd">up -d</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="footer-text">
+    <a href="https://github.com/asharahmed/helix">Helix</a> is open source.
+  </p>
+</footer>
+
+<script>
+  // Minimal scroll reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach((el) => obs.observe(el));
+</script>
+
+</body>
+</html>

@@ -11,10 +11,10 @@ const cache = new LRUCache<string, string>({
 });
 
 // Pin to globalThis for HMR survival in dev
-const globalCache = (globalThis as Record<string, unknown>).__ncCache as typeof cache | undefined;
+const globalCache = (globalThis as Record<string, unknown>).__helixCache as typeof cache | undefined;
 const effectiveCache = globalCache ?? cache;
 if (process.env.NODE_ENV !== 'production') {
-  (globalThis as Record<string, unknown>).__ncCache = effectiveCache;
+  (globalThis as Record<string, unknown>).__helixCache = effectiveCache;
 }
 
 export async function cached<T>(key: string, fn: () => Promise<Response>): Promise<T> {

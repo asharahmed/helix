@@ -9,6 +9,9 @@ export async function GET(req: NextRequest) {
   if (!query) {
     return new Response('Missing query parameter', { status: 400 });
   }
+  if (query.length > 2000) {
+    return new Response('Query too long (max 2000 chars)', { status: 400 });
+  }
 
   const start = searchParams.get('start') || undefined;
 

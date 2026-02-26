@@ -31,8 +31,8 @@ class EventBus {
 const createEventBus = () => new EventBus();
 
 export const eventBus: EventBus =
-  (globalThis as Record<string, unknown>).__ncEventBus as EventBus ?? createEventBus();
+  (globalThis as Record<string, unknown>).__helixEventBus as EventBus ?? createEventBus();
 
 if (process.env.NODE_ENV !== 'production') {
-  (globalThis as Record<string, unknown>).__ncEventBus = eventBus;
+  (globalThis as Record<string, unknown>).__helixEventBus = eventBus;
 }
