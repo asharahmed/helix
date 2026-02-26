@@ -188,6 +188,20 @@
     @apply pr-0;
   }
 
+  /* Equal-height cards in grid rows */
+  .grid-stretch > * {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .grid-stretch > * > .glow-card,
+  .grid-stretch > * > .glow-card-cyan,
+  .grid-stretch > * > .glow-card-amber,
+  .grid-stretch > * > .glow-card-red,
+  .grid-stretch > * > .glow-card-green {
+    flex: 1;
+  }
+
   /* Page header */
   .page-header {
     @apply flex items-center justify-between;

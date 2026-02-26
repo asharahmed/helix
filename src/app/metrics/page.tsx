@@ -41,11 +41,11 @@ export default function MetricsPage() {
 
         <SystemMetricsGrid start={start} end={end} step={step} />
 
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-12 lg:col-span-7">
+        <div className="grid grid-cols-12 gap-4 grid-stretch">
+          <div className="col-span-12 lg:col-span-6">
             <ContainerResources />
           </div>
-          <div className="col-span-12 lg:col-span-5">
+          <div className="col-span-12 lg:col-span-6">
             <NetworkProbes />
           </div>
         </div>

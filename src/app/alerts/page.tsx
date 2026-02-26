@@ -13,11 +13,11 @@ export default function AlertsPage() {
           <p className="page-subtitle">Prometheus and Wazuh unified view</p>
         </div>
 
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-12 lg:col-span-9">
+        <div className="grid grid-cols-12 gap-4 grid-stretch">
+          <div className="col-span-12 lg:col-span-8">
             <AlertTable />
           </div>
-          <div className="col-span-12 lg:col-span-3">
+          <div className="col-span-12 lg:col-span-4">
             <AlertTimeline />
           </div>
         </div>

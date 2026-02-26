@@ -23,27 +23,21 @@ export default function CommandCenterPage() {
         <SystemStatusSummary />
 
         {/* Main Grid */}
-        <div className="grid grid-cols-12 gap-4">
-          {/* Topology Graph */}
+        <div className="grid grid-cols-12 gap-4 grid-stretch">
           <div className="col-span-12 lg:col-span-7">
             <TopologyGraph />
           </div>
-
-          {/* Active Alerts */}
           <div className="col-span-12 lg:col-span-5">
             <ActiveAlertsPanel />
           </div>
         </div>
 
         {/* Bottom Grid */}
-        <div className="grid grid-cols-12 gap-4">
-          {/* Metric Sparklines */}
-          <div className="col-span-12 lg:col-span-7">
+        <div className="grid grid-cols-12 gap-4 grid-stretch">
+          <div className="col-span-12 lg:col-span-6">
             <MetricSparklines />
           </div>
-
-          {/* Events Timeline */}
-          <div className="col-span-12 lg:col-span-5">
+          <div className="col-span-12 lg:col-span-6">
             <EventsTimeline />
           </div>
         </div>
