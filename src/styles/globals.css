@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+
+@layer base {
+  :root {
+    --background: #0a0a0f;
+    --surface: #0f0f1a;
+    --border: #1a1a2e;
+    --border-bright: #2a2a4e;
+    --cyan: #00d4ff;
+    --cyan-dim: #00a0cc;
+    --cyan-glow: rgba(0, 212, 255, 0.15);
+    --amber: #ffb800;
+    --amber-dim: #cc9300;
+    --amber-glow: rgba(255, 184, 0, 0.15);
+    --red: #ff3b4f;
+    --red-dim: #cc2f3f;
+    --red-glow: rgba(255, 59, 79, 0.15);
+    --green: #00e676;
+    --green-dim: #00b85e;
+    --green-glow: rgba(0, 230, 118, 0.15);
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    background-color: var(--background);
+    color: #e0e0e0;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--background);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-bright);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--cyan-dim);
+  }
+}
+
+@layer components {
+  /* Grid background pattern */
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* CRT scanline overlay */
+  .scanline-overlay {
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 50;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    );
+  }
+
+  /* Glow card */
+  .glow-card {
+    @apply bg-surface border border-border rounded-lg transition-all duration-300;
+  }
+
+  .glow-card:hover {
+    border-color: var(--border-bright);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.05);
+  }
+
+  .glow-card-cyan {
+    @apply glow-card;
+    box-shadow: 0 0 15px var(--cyan-glow);
+    border-color: rgba(0, 212, 255, 0.3);
+  }
+
+  .glow-card-amber {
+    @apply glow-card;
+    box-shadow: 0 0 15px var(--amber-glow);
+    border-color: rgba(255, 184, 0, 0.3);
+  }
+
+  .glow-card-red {
+    @apply glow-card;
+    box-shadow: 0 0 15px var(--red-glow);
+    border-color: rgba(255, 59, 79, 0.3);
+  }
+
+  .glow-card-green {
+    @apply glow-card;
+    box-shadow: 0 0 15px var(--green-glow);
+    border-color: rgba(0, 230, 118, 0.3);
+  }
+
+  /* Status indicators */
+  .status-dot {
+    @apply w-2 h-2 rounded-full;
+  }
+
+  .status-dot-healthy {
+    @apply status-dot bg-green;
+    box-shadow: 0 0 8px var(--green);
+  }
+
+  .status-dot-warning {
+    @apply status-dot bg-amber;
+    box-shadow: 0 0 8px var(--amber);
+  }
+
+  .status-dot-critical {
+    @apply status-dot bg-red animate-glow-pulse;
+    box-shadow: 0 0 8px var(--red);
+  }
+
+  /* Data text */
+  .data-text {
+    @apply font-mono text-sm text-text-primary;
+  }
+
+  .label-text {
+    @apply font-sans text-xs text-text-secondary uppercase tracking-wider;
+  }
+}

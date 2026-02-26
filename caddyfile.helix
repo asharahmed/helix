@@ -1,0 +1,12 @@
+# Add this block to your main Caddyfile
+
+# https://helix.home.aahmed.ca {
+#   import tls_home
+#   import security_headers
+#   import logout_redirect
+#   handle /healthz { respond 200 }
+#   handle {
+#     import authelia
+#     reverse_proxy helix:3000
+#   }
+# }

@@ -1,0 +1,36 @@
+# Add this service to your main docker-compose.yml
+# or use: docker compose -f docker-compose.yml -f docker-compose.helix.yml up -d
+
+services:
+  helix:
+    build: ./tools/helix
+    container_name: helix
+    restart: unless-stopped
+    # NO ports directive -- Caddy reaches helix:3000 via the shared Docker network.
+    # Exposing ports would bind to 0.0.0.0, letting anyone on the LAN bypass Caddy/Authelia
+    # and spoof Remote-User headers directly.
+    environment:
+      - PROMETHEUS_URL=http://prometheus:9090
+      - ALERTMANAGER_URL=http://alertmanager:9093
+      - LOKI_URL=http://loki:3100
+      - WAZUH_API_URL=https://wazuh.manager:55000
+      - WAZUH_API_USER=wazuh-wui
+      - WAZUH_API_PASSWORD=${WAZUH_API_PASSWORD}
+      - WAZUH_INDEXER_URL=https://wazuh.indexer:9200
+      - WAZUH_INDEXER_USER=admin
+      - WAZUH_INDEXER_PASSWORD=${WAZUH_INDEXER_PASSWORD}
+      - CROWDSEC_URL=http://crowdsec:8080
+      - CROWDSEC_BOUNCER_API_KEY=${CROWDSEC_BOUNCER_API_KEY}
+      - WEBHOOK_SECRET=${HELIX_WEBHOOK_SECRET}
+      - NODE_EXTRA_CA_CERTS=/certs/wazuh-ca.pem
+      - NODE_OPTIONS=--max-old-space-size=400
+    volumes:
+      - ${WAZUH_CERTS_DIR:-./certs}/root-ca.pem:/certs/wazuh-ca.pem:ro
+    networks:
+      - homelab
+    profiles:
+      - monitoring
+    deploy:
+      resources:
+        limits:
+          memory: 512M

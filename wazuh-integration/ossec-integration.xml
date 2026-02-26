@@ -1,0 +1,17 @@
+<!-- Add this block to your Wazuh Manager ossec.conf -->
+<!-- Inside the <ossec_config> element -->
+
+<!--
+<integration>
+  <name>custom-helix</name>
+  <hook_url>http://helix:3000/api/webhooks/wazuh</hook_url>
+  <level>10</level>
+  <alert_format>json</alert_format>
+</integration>
+-->
+
+<!-- Mount the custom integration script and secret in docker-compose:
+  volumes:
+    - ./tools/helix/wazuh-integration/custom-helix.py:/var/ossec/integrations/custom-helix:ro
+    - ./secrets/helix_secret.txt:/var/ossec/etc/helix_secret.txt:ro
+-->

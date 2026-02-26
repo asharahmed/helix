@@ -1,0 +1,52 @@
+'use client';
+
+import { useState, useMemo } from 'react';
+import { AppLayout } from '@/components/layout/app-layout';
+import { SystemMetricsGrid } from '@/components/metrics/system-metrics-grid';
+import { ContainerResources } from '@/components/metrics/container-resources';
+import { NetworkProbes } from '@/components/metrics/network-probes';
+import { TimeRangePicker } from '@/components/metrics/time-range-picker';
+import { TIME_RANGES } from '@/lib/constants';
+
+export default function MetricsPage() {
+  const [timeRange, setTimeRange] = useState('1h');
+
+  const { start, end, step } = useMemo(() => {
+    const now = Math.floor(Date.now() / 1000);
+    const range = TIME_RANGES.find((r) => r.value === timeRange) ?? TIME_RANGES[2];
+    const seconds = range.seconds;
+
+    // Compute step to get ~120 data points
+    const step = Math.max(Math.floor(seconds / 120), 15);
+
+    return {
+      start: String(now - seconds),
+      end: String(now),
+      step: String(step),
+    };
+  }, [timeRange]);
+
+  return (
+    <AppLayout>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-semibold font-sans text-text-primary">
+            Metrics
+          </h1>
+          <TimeRangePicker value={timeRange} onChange={setTimeRange} />
+        </div>
+
+        <SystemMetricsGrid start={start} end={end} step={step} />
+
+        <div className="grid grid-cols-12 gap-4">
+          <div className="col-span-12 lg:col-span-7">
+            <ContainerResources />
+          </div>
+          <div className="col-span-12 lg:col-span-5">
+            <NetworkProbes />
+          </div>
+        </div>
+      </div>
+    </AppLayout>
+  );
+}

@@ -1,0 +1,18 @@
+# Add this receiver to your Alertmanager configuration (alertmanager.yml)
+# Then add it to your route tree.
+#
+# receivers:
+#   - name: 'helix'
+#     webhook_configs:
+#       - url: 'http://helix:3000/api/webhooks/alertmanager'
+#         http_config:
+#           authorization:
+#             type: Bearer
+#             credentials: '<HELIX_WEBHOOK_SECRET>'
+#         send_resolved: true
+#
+# route:
+#   receiver: default
+#   routes:
+#     - receiver: helix
+#       continue: true  # continue matching so other receivers also fire
