@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { DEFAULT_POLLING_INTERVAL } from '@/lib/constants';
 import type { CrowdSecDecision } from '@/lib/types';
 
@@ -14,6 +14,7 @@ export function useCrowdSecDecisions(interval?: number) {
       return Array.isArray(data) ? data : [];
     },
     refetchInterval: interval ?? DEFAULT_POLLING_INTERVAL,
+    placeholderData: keepPreviousData,
   });
 }
 

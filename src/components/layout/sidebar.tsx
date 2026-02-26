@@ -1,7 +1,9 @@
 'use client';
 
+import { useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   LayoutDashboard,
   Bell,
@@ -12,6 +14,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { NAV_ITEMS } from '@/lib/constants';
+import { prefetchRouteData } from '@/lib/prefetch';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -24,6 +27,12 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 export function Sidebar() {
   const pathname = usePathname();
+  const queryClient = useQueryClient();
+
+  const handlePrefetch = useCallback(
+    (href: string) => prefetchRouteData(queryClient, href),
+    [queryClient]
+  );
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -44,6 +53,7 @@ export function Sidebar() {
                 <TooltipTrigger asChild>
                   <Link
                     href={item.href}
+                    onMouseEnter={() => handlePrefetch(item.href)}
                     className={cn(
                       'flex h-10 w-10 items-center justify-center rounded-lg transition-all',
                       isActive

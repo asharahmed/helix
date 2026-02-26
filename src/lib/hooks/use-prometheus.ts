@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { DEFAULT_POLLING_INTERVAL } from '@/lib/constants';
 import type { PrometheusQueryResult, PrometheusAlertGroup, PrometheusTargetResponse } from '@/lib/types';
 
@@ -14,6 +14,7 @@ export function usePrometheusQuery(query: string, enabled = true, interval?: num
     },
     enabled,
     refetchInterval: interval ?? DEFAULT_POLLING_INTERVAL,
+    placeholderData: keepPreviousData,
   });
 }
 
@@ -35,6 +36,7 @@ export function usePrometheusRange(
     },
     enabled,
     refetchInterval: interval ?? DEFAULT_POLLING_INTERVAL,
+    placeholderData: keepPreviousData,
   });
 }
 

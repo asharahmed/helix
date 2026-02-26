@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { DEFAULT_POLLING_INTERVAL } from '@/lib/constants';
 import type { WazuhAgentResponse, WazuhAlertSearchResponse } from '@/lib/types';
 
@@ -13,6 +13,7 @@ export function useWazuhAgents(interval?: number) {
       return res.json();
     },
     refetchInterval: interval ?? DEFAULT_POLLING_INTERVAL,
+    placeholderData: keepPreviousData,
   });
 }
 
@@ -30,6 +31,7 @@ export function useWazuhAlerts(minutes = 60, size = 100, minLevel = 0, interval?
       return res.json();
     },
     refetchInterval: interval ?? DEFAULT_POLLING_INTERVAL,
+    placeholderData: keepPreviousData,
   });
 }
 
@@ -46,6 +48,7 @@ export function useWazuhFIM(minutes = 60, size = 50, interval?: number) {
       return res.json();
     },
     refetchInterval: interval ?? DEFAULT_POLLING_INTERVAL,
+    placeholderData: keepPreviousData,
   });
 }
 

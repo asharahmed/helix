@@ -12,7 +12,9 @@ export default function MetricsPage() {
   const [timeRange, setTimeRange] = useState('1h');
 
   const { start, end, step } = useMemo(() => {
-    const now = Math.floor(Date.now() / 1000);
+    // Quantize to 30-second boundaries so cache keys stay stable across navigation.
+    // Without this, every mount produces a unique timestamp, causing a full cache miss.
+    const now = Math.floor(Date.now() / 1000 / 30) * 30;
     const range = TIME_RANGES.find((r) => r.value === timeRange) ?? TIME_RANGES[2];
     const seconds = range.seconds;
 
