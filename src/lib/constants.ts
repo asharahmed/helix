@@ -28,7 +28,7 @@ export const SEVERITY_ORDER: Record<string, number> = {
 };
 
 export const NAV_ITEMS = [
-  { label: 'Command Center', href: '/', icon: 'LayoutDashboard' },
+  { label: 'Command Centre', href: '/', icon: 'LayoutDashboard' },
   { label: 'Alerts', href: '/alerts', icon: 'Bell' },
   { label: 'Security', href: '/security', icon: 'Shield' },
   { label: 'Metrics', href: '/metrics', icon: 'Activity' },

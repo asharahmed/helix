@@ -23,7 +23,7 @@ Rather than switching between Grafana, the Wazuh dashboard, and CrowdSec's CLI t
 
 ## Features
 
-**Command Center** - D3 force-directed topology graph of the service mesh, active alerts from Prometheus and Wazuh, system metric sparklines, and an event timeline.
+**Command Centre** - D3 force-directed topology graph of the service mesh, active alerts from Prometheus and Wazuh, system metric sparklines, and an event timeline.
 
 **Alerts** - Unified alert table across both Prometheus and Wazuh with search, source/severity filtering, detail expansion, and the ability to create Alertmanager silences directly.
 
@@ -31,7 +31,7 @@ Rather than switching between Grafana, the Wazuh dashboard, and CrowdSec's CLI t
 
 **Metrics** - Time-series charts for system resources (CPU, memory, disk, network), per-container resource usage, and network probe results. Backed by Prometheus range queries with an adjustable time window.
 
-**Logs** - Loki log viewer with container filtering, text search, and virtualized scrolling. Supports both polling and live tail mode via SSE.
+**Logs** - Loki log viewer with container filtering, text search, and virtualised scrolling. Supports both polling and live tail mode via SSE.
 
 ## Architecture
 
@@ -151,8 +151,8 @@ src/
 |---|---|
 | Framework | Next.js 14 (App Router) |
 | Data fetching | TanStack Query v5 |
-| Visualization | D3 force simulation (canvas), Recharts |
-| Virtualization | TanStack Virtual |
+| Visualisation | D3 force simulation (canvas), Recharts |
+| Virtualisation | TanStack Virtual |
 | Animation | Framer Motion |
 | Styling | Tailwind CSS |
 | UI primitives | Radix UI |

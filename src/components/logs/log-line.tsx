@@ -27,7 +27,7 @@ function highlightLine(line: string): React.ReactNode {
 }
 
 function highlightJSON(json: string): React.ReactNode {
-  // Tokenize and colorize
+  // Tokenize and colourise
   const parts: React.ReactNode[] = [];
   let i = 0;
 

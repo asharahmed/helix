@@ -13,7 +13,7 @@ export default function CommandCenterPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-semibold font-sans text-text-primary">
-            Command Center
+            Command Centre
           </h1>
           <span className="label-text">HELIX v1.1</span>
         </div>
