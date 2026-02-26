@@ -27,7 +27,7 @@ services:
     volumes:
       - ${WAZUH_CERTS_DIR:-./certs}/root-ca.pem:/certs/wazuh-ca.pem:ro
     networks:
-      - homelab
+      - default
     profiles:
       - monitoring
     deploy:
