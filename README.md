@@ -127,7 +127,7 @@ src/
     loading.tsx                 # Loading skeleton
     not-found.tsx               # 404
   components/
-    command-center/             # Dashboard: topology graph, sparklines, alerts, timeline
+    command-centre/             # Dashboard: topology graph, sparklines, alerts, timeline
     alerts/                     # Alert table, detail drawer, silence dialog
     security/                   # Agent grid, CrowdSec decisions, Wazuh alerts, FIM
     metrics/                    # Time-series charts, system metrics, container resources

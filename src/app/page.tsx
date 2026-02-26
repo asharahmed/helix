@@ -1,11 +1,11 @@
 'use client';
 
 import { AppLayout } from '@/components/layout/app-layout';
-import { TopologyGraph } from '@/components/command-center/topology-graph';
-import { ActiveAlertsPanel } from '@/components/command-center/active-alerts-panel';
-import { MetricSparklines } from '@/components/command-center/metric-sparklines';
-import { EventsTimeline } from '@/components/command-center/events-timeline';
-import { SystemStatusSummary } from '@/components/command-center/system-status-summary';
+import { TopologyGraph } from '@/components/command-centre/topology-graph';
+import { ActiveAlertsPanel } from '@/components/command-centre/active-alerts-panel';
+import { MetricSparklines } from '@/components/command-centre/metric-sparklines';
+import { EventsTimeline } from '@/components/command-centre/events-timeline';
+import { SystemStatusSummary } from '@/components/command-centre/system-status-summary';
 
 export default function CommandCenterPage() {
   return (
