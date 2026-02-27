@@ -59,7 +59,7 @@ export function FIMEvents() {
                     </td>
                     <td>
                       <span className="text-xs font-mono text-text-primary">
-                        {src.agent.name}
+                        {src.agent?.name ?? 'unknown'}
                       </span>
                     </td>
                     <td>
