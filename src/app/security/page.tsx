@@ -5,6 +5,7 @@ import { WazuhAlertsPanel } from '@/components/security/wazuh-alerts';
 import { AgentGrid } from '@/components/security/agent-grid';
 import { CrowdSecDecisions } from '@/components/security/crowdsec-decisions';
 import { FIMEvents } from '@/components/security/fim-events';
+import { VulnerabilityPanel } from '@/components/security/vulnerability-panel';
 
 export default function SecurityPage() {
   return (
@@ -30,6 +31,12 @@ export default function SecurityPage() {
           </div>
           <div className="col-span-12 lg:col-span-6">
             <FIMEvents />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-12 gap-4 grid-stretch">
+          <div className="col-span-12">
+            <VulnerabilityPanel />
           </div>
         </div>
       </div>

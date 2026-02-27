@@ -1,11 +1,12 @@
 'use client';
 
-import { X } from 'lucide-react';
+import { useMemo } from 'react';
+import { ExternalLink, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { formatTimestamp, severityColor } from '@/lib/utils';
-import type { UnifiedAlert } from '@/lib/types';
+import type { AlertmanagerAlert, UnifiedAlert } from '@/lib/types';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface AlertDetailDrawerProps {
@@ -14,6 +15,23 @@ interface AlertDetailDrawerProps {
 }
 
 export function AlertDetailDrawer({ alert, onClose }: AlertDetailDrawerProps) {
+  const grafanaUrl = useMemo(() => {
+    if (!alert || alert.source !== 'prometheus') return '';
+
+    const grafanaBase = process.env.GRAFANA_URL;
+    const rawAlert = alert.raw as AlertmanagerAlert;
+    const expr = alert.labels.expr || alert.labels.expression || alert.labels.query;
+
+    if (grafanaBase && expr) {
+      const left = JSON.stringify({
+        queries: [{ refId: 'A', expr }],
+      });
+      return `${grafanaBase.replace(/\/$/, '')}/explore?orgId=1&left=${encodeURIComponent(left)}`;
+    }
+
+    return rawAlert.generatorURL || '';
+  }, [alert]);
+
   return (
     <AnimatePresence>
       {alert && (
@@ -34,10 +52,13 @@ export function AlertDetailDrawer({ alert, onClose }: AlertDetailDrawerProps) {
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 26, stiffness: 350 }}
             className="fixed right-0 top-0 z-50 h-screen w-full max-w-md lg:max-w-lg border-l border-border bg-surface"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="alert-detail-title"
           >
             <div className="flex items-center justify-between p-4 border-b border-border">
-              <h2 className="card-title">Alert Details</h2>
-              <Button variant="ghost" size="icon" onClick={onClose}>
+              <h2 id="alert-detail-title" className="card-title">Alert Details</h2>
+              <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close alert details">
                 <X className="h-4 w-4" />
               </Button>
             </div>
@@ -87,6 +108,21 @@ export function AlertDetailDrawer({ alert, onClose }: AlertDetailDrawerProps) {
                     {formatTimestamp(alert.timestamp)}
                   </span>
                 </div>
+
+                {grafanaUrl ? (
+                  <div>
+                    <label className="label-text mb-1 block">Observability</label>
+                    <a
+                      href={grafanaUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1.5 text-sm font-mono text-cyan hover:text-cyan/80"
+                    >
+                      View in Grafana
+                      <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                  </div>
+                ) : null}
 
                 {/* Labels */}
                 <div>

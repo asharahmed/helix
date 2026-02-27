@@ -1,4 +1,5 @@
 import type { BusEvent } from '@/lib/types';
+import { eventStore } from '@/lib/event-store';
 
 type Listener = (event: BusEvent) => void;
 
@@ -13,6 +14,7 @@ class EventBus {
   }
 
   publish(event: BusEvent): void {
+    eventStore.push(event);
     this.listeners.forEach((fn) => {
       try {
         fn(event);

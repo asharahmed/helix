@@ -39,9 +39,11 @@ export function useSSE() {
         if (data.type === 'alert') {
           queryClient.invalidateQueries({ queryKey: ['alerts'] });
           queryClient.invalidateQueries({ queryKey: ['alertmanager-alerts'] });
+          queryClient.invalidateQueries({ queryKey: ['events'] });
         } else if (data.type === 'security') {
           queryClient.invalidateQueries({ queryKey: ['wazuh-alerts'] });
           queryClient.invalidateQueries({ queryKey: ['security'] });
+          queryClient.invalidateQueries({ queryKey: ['events'] });
         }
       } catch {
         // Ignore parse errors (heartbeats, etc.)

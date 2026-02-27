@@ -106,3 +106,35 @@ export interface WazuhTokenResponse {
     token: string;
   };
 }
+
+export interface WazuhVulnerability {
+  _id: string;
+  _source: {
+    agent: {
+      id: string;
+      name: string;
+    };
+    vulnerability: {
+      id: string;
+      severity: string;
+      package: {
+        name: string;
+        version: string;
+      };
+      detected_at: string;
+      published_at: string;
+      title: string;
+      reference: string;
+    };
+  };
+}
+
+export interface WazuhVulnerabilityResponse {
+  hits: {
+    total: {
+      value: number;
+      relation?: string;
+    };
+    hits: WazuhVulnerability[];
+  };
+}

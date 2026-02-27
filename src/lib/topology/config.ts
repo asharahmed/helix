@@ -1,6 +1,6 @@
 import type { TopologyNode, TopologyEdge } from '@/lib/types';
 
-export const TOPOLOGY_NODES: Omit<TopologyNode, 'status' | 'alertCount'>[] = [
+export const FALLBACK_NODES: Omit<TopologyNode, 'status' | 'alertCount'>[] = [
   // Core services
   { id: 'prometheus', label: 'Prometheus', type: 'core' },
   { id: 'alertmanager', label: 'Alertmanager', type: 'core' },
@@ -22,7 +22,7 @@ export const TOPOLOGY_NODES: Omit<TopologyNode, 'status' | 'alertCount'>[] = [
   { id: 'blackbox', label: 'Blackbox', type: 'exporter' },
 ];
 
-export const TOPOLOGY_EDGES: TopologyEdge[] = [
+export const STATIC_EDGES: TopologyEdge[] = [
   // Prometheus scrapes
   { source: 'prometheus', target: 'node-exporter', type: 'data' },
   { source: 'prometheus', target: 'cadvisor', type: 'data' },
@@ -57,3 +57,7 @@ export const STATUS_COLORS = {
   down: '#ff3b4f',
   unknown: '#6b7280',
 } as const;
+
+// Backward-compatible exports for existing callers.
+export const TOPOLOGY_NODES = FALLBACK_NODES;
+export const TOPOLOGY_EDGES = STATIC_EDGES;

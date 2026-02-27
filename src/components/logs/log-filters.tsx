@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, Play, Pause } from 'lucide-react';
+import { Search, Play, Pause, Download } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -15,6 +15,7 @@ interface LogFiltersProps {
   isLive: boolean;
   onLiveToggle: () => void;
   logCount: number;
+  onExport?: () => void;
 }
 
 export function LogFilters({
@@ -25,6 +26,7 @@ export function LogFilters({
   isLive,
   onLiveToggle,
   logCount,
+  onExport,
 }: LogFiltersProps) {
   const { data: containerValues } = useLokiLabelValues('container');
   const containers = containerValues?.data ?? [];
@@ -81,6 +83,16 @@ export function LogFilters({
       </Button>
 
       <Badge>{logCount} entries</Badge>
+      <Button
+        variant="ghost"
+        size="sm"
+        aria-label="Export logs as CSV"
+        onClick={onExport}
+        disabled={!onExport || logCount === 0}
+      >
+        <Download className="h-3.5 w-3.5 mr-1" />
+        Export
+      </Button>
     </div>
   );
 }

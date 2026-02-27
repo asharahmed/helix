@@ -22,7 +22,7 @@ export default function CommandCenterPage() {
             <h1 className="page-title">Command Centre</h1>
             <p className="page-subtitle">Infrastructure overview</p>
           </div>
-          <span className="label-text">HELIX v1.1</span>
+          <span className="label-text">HELIX v1.2</span>
         </div>
 
         {/* Status Summary Cards */}

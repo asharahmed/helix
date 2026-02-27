@@ -1,6 +1,6 @@
 import { wazuhFetch } from './tls';
 import { cached } from '@/lib/cache';
-import type { WazuhAlertSearchResponse } from '@/lib/types';
+import type { WazuhAlertSearchResponse, WazuhVulnerabilityResponse } from '@/lib/types';
 
 const WAZUH_INDEXER_URL = process.env.WAZUH_INDEXER_URL || 'https://wazuh.indexer:9200';
 const WAZUH_INDEXER_USER = process.env.WAZUH_INDEXER_USER || 'admin';
@@ -75,5 +75,29 @@ export async function getWazuhFIMEvents(minutes = 60, size = 50): Promise<WazuhA
       },
     },
     size
+  );
+}
+
+export async function getWazuhVulnerabilities(size = 200): Promise<WazuhVulnerabilityResponse> {
+  const boundedSize = Math.min(Math.max(size, 1), 500);
+  const body = {
+    query: {
+      match_all: {},
+    },
+    size: boundedSize,
+    track_total_hits: true,
+    sort: [
+      { 'vulnerability.severity': { order: 'desc' } },
+      { 'vulnerability.detected_at': { order: 'desc' } },
+    ],
+  };
+
+  return cached<WazuhVulnerabilityResponse>(
+    `widx:vulns:${boundedSize}`,
+    () =>
+      indexerFetch('/wazuh-states-vulnerabilities-*/_search', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      })
   );
 }

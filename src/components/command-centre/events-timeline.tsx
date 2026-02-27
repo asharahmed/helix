@@ -6,8 +6,9 @@ import { GlowCard } from '@/components/shared/glow-card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { LoadingSkeleton } from '@/components/shared/loading-skeleton';
-import { useAlertmanagerAlerts, useWazuhAlerts } from '@/lib/hooks';
+import { useAlertmanagerAlerts, useRecentEvents, useWazuhAlerts } from '@/lib/hooks';
 import { formatRelativeTime } from '@/lib/utils';
+import type { BusEvent } from '@/lib/types';
 
 interface TimelineEvent {
   id: string;
@@ -17,9 +18,34 @@ interface TimelineEvent {
   type: 'alert' | 'security' | 'system';
 }
 
+function getPersistedEventTitle(event: BusEvent): string {
+  const payload = event.data as Record<string, any> | undefined;
+
+  if (event.source === 'alertmanager') {
+    return (
+      payload?.alerts?.[0]?.labels?.alertname ||
+      payload?.alerts?.[0]?.annotations?.summary ||
+      payload?.title ||
+      'Alertmanager webhook received'
+    );
+  }
+
+  if (event.source === 'wazuh') {
+    return (
+      payload?.rule?.description ||
+      payload?._source?.rule?.description ||
+      payload?.title ||
+      'Wazuh event received'
+    );
+  }
+
+  return 'System event';
+}
+
 export function EventsTimeline() {
   const { data: amAlerts, isLoading: amLoading } = useAlertmanagerAlerts();
   const { data: wazuhAlerts, isLoading: wazLoading } = useWazuhAlerts(60, 15, 6);
+  const { data: persistedEvents, isLoading: persistedLoading } = useRecentEvents(15);
 
   const events = useMemo<TimelineEvent[]>(() => {
     const items: TimelineEvent[] = [];
@@ -48,12 +74,28 @@ export function EventsTimeline() {
       }
     }
 
+    if (persistedEvents) {
+      for (const [index, event] of persistedEvents.entries()) {
+        items.push({
+          id: `evt-${event.timestamp}-${index}`,
+          source: event.source === 'alertmanager' ? 'Alertmanager' : event.source === 'wazuh' ? 'Wazuh' : 'System',
+          title: getPersistedEventTitle(event),
+          timestamp: event.timestamp,
+          type: event.type,
+        });
+      }
+    }
+
     return items
+      .filter((event, index, list) => {
+        const dedupeKey = `${event.source}:${event.title}:${event.timestamp}`;
+        return index === list.findIndex((candidate) => `${candidate.source}:${candidate.title}:${candidate.timestamp}` === dedupeKey);
+      })
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
       .slice(0, 15);
-  }, [amAlerts, wazuhAlerts]);
+  }, [amAlerts, persistedEvents, wazuhAlerts]);
 
-  const isLoading = amLoading || wazLoading;
+  const isLoading = amLoading || wazLoading || persistedLoading;
 
   const typeIcon = (type: string) => {
     switch (type) {

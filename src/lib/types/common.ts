@@ -46,6 +46,11 @@ export interface TopologyEdge {
   type: 'data' | 'alert' | 'proxy';
 }
 
+export interface TopologyData {
+  nodes: TopologyNode[];
+  edges: TopologyEdge[];
+}
+
 export interface UnifiedAlert {
   id: string;
   source: 'prometheus' | 'wazuh';
@@ -56,4 +61,12 @@ export interface UnifiedAlert {
   status: string;
   labels: Record<string, string>;
   raw: unknown;
+}
+
+export interface AlertGroup {
+  key: string;
+  label: string;
+  alerts: UnifiedAlert[];
+  highestSeverity: 'critical' | 'warning' | 'info';
+  count: number;
 }

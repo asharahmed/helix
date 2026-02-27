@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useCallback, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   forceSimulation,
   forceLink,
@@ -17,10 +17,11 @@ import Link from 'next/link';
 import { X, ExternalLink } from 'lucide-react';
 import { GlowCard } from '@/components/shared/glow-card';
 import { HexIndicator } from '@/components/shared/hex-indicator';
-import { useHealth } from '@/lib/hooks';
-import { TOPOLOGY_NODES, TOPOLOGY_EDGES, NODE_COLORS, STATUS_COLORS } from '@/lib/topology/config';
+import { LoadingSkeleton } from '@/components/shared/loading-skeleton';
+import { useHealth, useTopology } from '@/lib/hooks';
+import { FALLBACK_NODES, STATIC_EDGES, NODE_COLORS, STATUS_COLORS } from '@/lib/topology/config';
 import { SERVICE_NAMES } from '@/lib/constants';
-import type { TopologyNode, TopologyEdge, ServiceStatus, ServiceName } from '@/lib/types';
+import type { TopologyNode, ServiceStatus, ServiceName } from '@/lib/types';
 
 const SERVICE_LINKS: Record<string, string> = {
   prometheus: '/metrics',
@@ -48,18 +49,15 @@ export function TopologyGraph() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const { data: health } = useHealth();
+  const { data: topologyData, isLoading: topologyLoading } = useTopology();
   const hoveredNodeRef = useRef<string | null>(null);
-  const selectedNodeRef = useRef<string | null>(null);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
 
-  const getStatus = useCallback(
-    (id: string): ServiceStatus => {
-      if (!health) return 'unknown';
-      const svc = health.services.find((s) => id.startsWith(s.name));
-      return svc?.status ?? 'healthy'; // Exporters default to healthy
-    },
-    [health]
-  );
+  const nodesList = topologyData?.nodes ?? FALLBACK_NODES.map((node) => ({
+    ...node,
+    status: 'unknown' as ServiceStatus,
+    alertCount: 0,
+  }));
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -81,13 +79,11 @@ export function TopologyGraph() {
     ctx.scale(dpr, dpr);
 
     // Build simulation data
-    const nodes: SimNode[] = TOPOLOGY_NODES.map((n) => ({
-      ...n,
-      status: getStatus(n.id),
-      alertCount: 0,
+    const nodes: SimNode[] = nodesList.map((node) => ({
+      ...node,
     }));
 
-    const links: SimLink[] = TOPOLOGY_EDGES.map((e) => ({
+    const links: SimLink[] = (topologyData?.edges ?? STATIC_EDGES).map((e) => ({
       source: e.source,
       target: e.target,
       type: e.type,
@@ -247,7 +243,6 @@ export function TopologyGraph() {
         const dy = n.y - my;
         return dx * dx + dy * dy < 400;
       });
-      selectedNodeRef.current = found?.id ?? null;
       setSelectedNode(found?.id ?? null);
     });
 
@@ -257,13 +252,7 @@ export function TopologyGraph() {
       sel.on('.zoom', null);
       sel.on('.drag', null);
     };
-  }, [getStatus]);
-
-  // Accessible hidden list
-  const nodesList = TOPOLOGY_NODES.map((n) => ({
-    ...n,
-    status: getStatus(n.id),
-  }));
+  }, [nodesList, topologyData]);
 
   const selectedNodeData = selectedNode
     ? nodesList.find((n) => n.id === selectedNode)
@@ -276,10 +265,20 @@ export function TopologyGraph() {
     <GlowCard className="relative overflow-hidden">
       <div className="flex items-center justify-between mb-3">
         <h2 className="card-title">Service Topology</h2>
-        <span className="label-text">{TOPOLOGY_NODES.length} services</span>
+        <span className="label-text">{nodesList.length} services</span>
       </div>
 
-      <div ref={containerRef} className="w-full relative">
+      <div
+        ref={containerRef}
+        className="w-full relative"
+        role="group"
+        aria-label="Service topology graph"
+      >
+        {topologyLoading && !topologyData ? (
+          <div className="h-[400px]">
+            <LoadingSkeleton lines={6} />
+          </div>
+        ) : null}
         <canvas ref={canvasRef} aria-hidden="true" className="rounded" />
         <ul className="sr-only" aria-label="Service topology">
           {nodesList.map((n) => (
@@ -299,6 +298,7 @@ export function TopologyGraph() {
               <button
                 onClick={() => setSelectedNode(null)}
                 className="text-muted hover:text-text-primary"
+                aria-label="Close topology details"
               >
                 <X className="h-3.5 w-3.5" />
               </button>

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { Bell, Search, Filter, VolumeX } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Download, LayoutGrid, LayoutList, Search, VolumeX } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,8 +12,10 @@ import { LoadingSkeleton } from '@/components/shared/loading-skeleton';
 import { ErrorState } from '@/components/shared/error-state';
 import { SilenceDialog } from './silence-dialog';
 import { AlertDetailDrawer } from './alert-detail-drawer';
+import { AlertGroupView } from './alert-group-view';
 import { useAlertmanagerAlerts, useWazuhAlerts } from '@/lib/hooks';
 import { formatRelativeTime, severityColor, truncate } from '@/lib/utils';
+import { exportToCSV } from '@/lib/utils/export';
 import { unifyAlerts } from '@/lib/utils/unify-alerts';
 import type { UnifiedAlert } from '@/lib/types';
 
@@ -21,11 +23,23 @@ export function AlertTable() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sourceFilter, setSourceFilter] = useState<'all' | 'prometheus' | 'wazuh'>('all');
   const [severityFilter, setSeverityFilter] = useState<'all' | 'critical' | 'warning' | 'info'>('all');
+  const [viewMode, setViewMode] = useState<'flat' | 'grouped'>('flat');
   const [selectedAlert, setSelectedAlert] = useState<UnifiedAlert | null>(null);
   const [silenceTarget, setSilenceTarget] = useState<UnifiedAlert | null>(null);
 
   const { data: amAlerts, isLoading: amLoading, error: amError } = useAlertmanagerAlerts();
   const { data: wazuhAlerts, isLoading: wazLoading, error: wazError } = useWazuhAlerts(360, 200);
+
+  useEffect(() => {
+    const storedView = window.localStorage.getItem('helix-alert-view');
+    if (storedView === 'flat' || storedView === 'grouped') {
+      setViewMode(storedView);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem('helix-alert-view', viewMode);
+  }, [viewMode]);
 
   const unifiedAlerts = useMemo<UnifiedAlert[]>(
     () => unifyAlerts(amAlerts, wazuhAlerts),
@@ -50,6 +64,19 @@ export function AlertTable() {
 
   const isLoading = amLoading || wazLoading;
   const hasError = amError || wazError;
+
+  const exportRows = useMemo(
+    () =>
+      filteredAlerts.map((alert) => ({
+        severity: alert.severity,
+        title: alert.title,
+        source: alert.source,
+        status: alert.status,
+        timestamp: alert.timestamp,
+        description: alert.description,
+      })),
+    [filteredAlerts]
+  );
 
   return (
     <>
@@ -92,6 +119,36 @@ export function AlertTable() {
           <span className="label-text">
             {filteredAlerts.length} alerts
           </span>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            aria-label="Export alerts as CSV"
+            onClick={() => exportToCSV(exportRows, 'helix-alerts')}
+            disabled={filteredAlerts.length === 0}
+          >
+            <Download className="h-3.5 w-3.5 mr-1" />
+            Export
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            aria-label={viewMode === 'flat' ? 'Switch to grouped alerts view' : 'Switch to flat alerts view'}
+            onClick={() => setViewMode((current) => (current === 'flat' ? 'grouped' : 'flat'))}
+          >
+            {viewMode === 'flat' ? (
+              <>
+                <LayoutGrid className="h-3.5 w-3.5 mr-1" />
+                Grouped
+              </>
+            ) : (
+              <>
+                <LayoutList className="h-3.5 w-3.5 mr-1" />
+                Flat
+              </>
+            )}
+          </Button>
         </div>
 
         {/* Table */}
@@ -99,6 +156,14 @@ export function AlertTable() {
           <LoadingSkeleton lines={8} />
         ) : hasError ? (
           <ErrorState message="Failed to load alerts" />
+        ) : viewMode === 'grouped' ? (
+          <ScrollArea className="h-[calc(100vh-280px)]">
+            <AlertGroupView
+              alerts={filteredAlerts}
+              onSelectAlert={setSelectedAlert}
+              onSilenceAlert={setSilenceTarget}
+            />
+          </ScrollArea>
         ) : (
           <ScrollArea className="h-[calc(100vh-280px)]">
             <table className="data-table">
@@ -117,7 +182,16 @@ export function AlertTable() {
                   <tr
                     key={alert.id}
                     className="cursor-pointer"
+                    role="button"
+                    tabIndex={0}
+                    aria-expanded={selectedAlert?.id === alert.id}
                     onClick={() => setSelectedAlert(alert)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        setSelectedAlert(alert);
+                      }
+                    }}
                   >
                     <td>
                       <Badge

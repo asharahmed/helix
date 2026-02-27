@@ -5,3 +5,6 @@ export * from './use-loki';
 export * from './use-wazuh';
 export * from './use-crowdsec';
 export * from './use-health';
+export * from './use-events';
+export * from './use-topology';
+export * from './use-wazuh-vulnerabilities';

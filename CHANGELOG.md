@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.2.0
+
+- Added Vitest-based test coverage for cache, exports, event persistence, health aggregation, alert normalisation, and webhook auth
+- Added client-side CSV and JSON export actions for alerts, logs, and metric charts
+- Added persistent event history with `/api/events` and command-centre timeline seeding from stored webhook events
+- Added dynamic topology discovery from Prometheus targets with cached `/api/topology` responses
+- Added grouped alert view with local preference persistence and keyboard-accessible alert rows
+- Added Wazuh vulnerability inventory with API, hook, and security dashboard panel
+- Added Grafana quick links for metric charts and Prometheus alert details when `GRAFANA_URL` is configured
+- Added accessibility improvements including skip-to-content navigation, status live regions, clearer button labelling, and topology labelling
+
 ## v1.1.0
 
 - Fixed Wazuh API integration for current endpoint format

@@ -38,7 +38,7 @@ export function StatusBar({ sseState = 'connecting' }: StatusBarProps) {
         ))}
       </div>
 
-      <div className="flex items-center gap-1.5 shrink-0">
+      <div className="flex items-center gap-1.5 shrink-0" role="status" aria-live="polite">
         <div className={`h-1.5 w-1.5 rounded-full ${sse.dot}`} />
         <span className={`text-[10px] font-mono ${sse.color}`}>
           {sseState}

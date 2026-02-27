@@ -77,6 +77,7 @@ export function AgentGrid() {
                 <Button
                   variant="ghost"
                   size="sm"
+                  aria-label={`Run syscheck scan for ${agent.name}`}
                   onClick={() => triggerScan.mutate(
                     { agentId: agent.id, action: 'syscheck' },
                     {
@@ -93,6 +94,7 @@ export function AgentGrid() {
                 <Button
                   variant="ghost"
                   size="sm"
+                  aria-label={`Run rootcheck scan for ${agent.name}`}
                   onClick={() => triggerScan.mutate(
                     { agentId: agent.id, action: 'rootcheck' },
                     {

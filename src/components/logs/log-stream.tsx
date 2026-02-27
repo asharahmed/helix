@@ -9,6 +9,7 @@ import { LoadingSkeleton } from '@/components/shared/loading-skeleton';
 import { ErrorState } from '@/components/shared/error-state';
 import { useLokiQuery, parseLokiStreams } from '@/lib/hooks';
 import type { LogEntry } from '@/lib/types';
+import { exportToCSV } from '@/lib/utils/export';
 
 export function LogStream() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -167,6 +168,16 @@ export function LogStream() {
           isLive={isLive}
           onLiveToggle={handleLiveToggle}
           logCount={filteredEntries.length}
+          onExport={() =>
+            exportToCSV(
+              filteredEntries.map((entry) => ({
+                timestamp: entry.timestamp,
+                line: entry.line,
+                container: entry.labels.container ?? '',
+              })),
+              'helix-logs'
+            )
+          }
         />
       </div>
 

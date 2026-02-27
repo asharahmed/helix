@@ -70,6 +70,7 @@ export function CrowdSecDecisions() {
                     <Button
                       variant="destructive"
                       size="sm"
+                      aria-label={`Remove ban for ${decision.value}`}
                       onClick={() => setUnbanTarget({ id: decision.id, value: decision.value })}
                       disabled={deleteDecision.isPending}
                     >

@@ -2,11 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { eventBus } from '@/lib/event-bus';
 import { secureCompare } from '@/lib/utils/secure-compare';
 
-const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || '';
-
 export async function POST(req: NextRequest) {
+  const webhookSecret = process.env.WEBHOOK_SECRET || '';
   const auth = req.headers.get('Authorization');
-  if (!auth || !secureCompare(auth, `Bearer ${WEBHOOK_SECRET}`)) {
+  if (!auth || !secureCompare(auth, `Bearer ${webhookSecret}`)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
