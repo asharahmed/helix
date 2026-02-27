@@ -1,0 +1,40 @@
+name: Deploy
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    needs: ci
+    runs-on: [self-hosted, windows, deploy]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Pull latest code
+        run: |
+          cd C:\Users\rdpadmin\homelab\tools\helix
+          git fetch origin main
+          git reset --hard origin/main
+
+      - name: Rebuild and restart container
+        run: |
+          cd C:\Users\rdpadmin\homelab
+          docker compose -f docker-compose.yml -f tools\helix\docker-compose.helix.yml build --no-cache helix
+          docker compose -f docker-compose.yml -f tools\helix\docker-compose.helix.yml up -d helix
+
+      - name: Wait for healthy
+        run: |
+          $attempts = 0
+          do {
+            Start-Sleep -Seconds 5
+            $status = docker inspect helix --format '{{.State.Health.Status}}' 2>$null
+            $attempts++
+          } while ($status -ne 'healthy' -and $attempts -lt 12)
+          if ($status -ne 'healthy') { throw "Container not healthy after 60s" }
+          Write-Output "Helix is healthy"
+
+      - name: Prune old images
+        run: docker image prune -f
